@@ -37,7 +37,7 @@ const Login = () => {
         return;
       }
 
-      const u = data?.data;
+      const u = data?.data?.user;
       if (!u) {
         toast.error("Invalid response from server.");
         return;
