@@ -72,20 +72,23 @@ const Login = () => {
           credentials: "include",
         }
       );
-
+  
       const data = await safeJson(res);
-
+  
       if (!res.ok) {
         toast.error(data?.message || "Google login failed");
         return;
       }
-
-      const u = data?.data?.user;
-      if (!u) {
+  
+      // 🔹 FIXED: safer extraction
+      const u = data?.data?.user || data?.data || {};
+  
+      if (!u?._id) {
         toast.error("Google login failed. Try again.");
+        console.log("Invalid response:", data);
         return;
       }
-
+  
       setUser({
         _id: u._id,
         email: u.email,
@@ -93,7 +96,7 @@ const Login = () => {
         avatar: u.profile?.photo || null,
         profile: u.profile || {},
       });
-
+  
       toast.success("Logged in with Google!");
       navigate("/");
     } catch (err) {
