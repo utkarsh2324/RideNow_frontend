@@ -6,7 +6,7 @@ export const HostAuthContext = createContext();
 
 export function HostAuthProvider({ children }) {
   const [host, setHost] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Fetch current host on mount
   useEffect(() => {
