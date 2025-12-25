@@ -122,7 +122,7 @@ export default function MyBookings() {
                   >
                     End Ride
                   </button>
-                ) : b.bookingStatus === "Completed" ? (
+                ) : b.bookingStatus === "completed" ? (
                   <button
                     disabled
                     className="w-full py-2 rounded-xl bg-gray-300 text-gray-700 font-semibold cursor-not-allowed"

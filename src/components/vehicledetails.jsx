@@ -104,18 +104,19 @@ const handleBooking = async () => {
   
       // ✅ Prepare payload exactly as backend expects
       const payload = {
-        startDate: fromDate,
-        endDate: toDate,
+        fromDate,
+        toDate,
+        fromTime,
+        toTime,
         totalPrice,
       };
   
       console.log("📦 Sending booking payload:", payload);
-  
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}vehicles/book/${id}`,
         {
           method: "POST",
-          credentials: "include", // includes cookies (auth)
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }

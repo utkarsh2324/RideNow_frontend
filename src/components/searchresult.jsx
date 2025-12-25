@@ -23,7 +23,12 @@ export default function SearchResults() {
     try {
       setLoading(true);
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}vehicles/search?location=${encodeURIComponent(locationParam)}`,
+        `${import.meta.env.VITE_BACKEND_URL}vehicles/search?` +
+          `location=${encodeURIComponent(locationParam)}` +
+          `&fromDate=${fromDate}` +
+          `&toDate=${toDate}` +
+          `&fromTime=${fromTime}` +
+          `&toTime=${toTime}`,
         { credentials: "include" }
       );
 
