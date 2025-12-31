@@ -127,7 +127,7 @@ const handleBooking = async () => {
   
       if (res.ok) {
         toast.success("Vehicle booked successfully!");
-        navigate("/mybookings");
+        navigate("/rides");
       } else {
         toast.error(data.message || "Failed to book vehicle.");
       }

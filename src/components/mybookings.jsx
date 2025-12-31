@@ -116,27 +116,34 @@ export default function MyBookings() {
 
                 {/* ✅ End Ride button only if confirmed */}
                 {b.bookingStatus === "confirmed" ? (
-                  <button
-                    onClick={() => handleEndBooking(b.vehicleId)}
-                    className="w-full py-2 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-semibold"
-                  >
-                    End Ride
-                  </button>
-                ) : b.bookingStatus === "completed" ? (
-                  <button
-                    disabled
-                    className="w-full py-2 rounded-xl bg-gray-300 text-gray-700 font-semibold cursor-not-allowed"
-                  >
-                    Ride Completed
-                  </button>
-                ) : (
-                  <button
-                    disabled
-                    className="w-full py-2 rounded-xl bg-yellow-400 text-gray-800 font-semibold cursor-not-allowed"
-                  >
-                    Pending Approval
-                  </button>
-                )}
+  <button
+    onClick={() => handleEndBooking(b.vehicleId)}
+    className="w-full py-2 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-semibold"
+  >
+    End Ride
+  </button>
+) : b.bookingStatus === "completed" ? (
+  <button
+    disabled
+    className="w-full py-2 rounded-xl bg-gray-300 text-gray-700 font-semibold cursor-not-allowed"
+  >
+    Ride Completed
+  </button>
+) : b.bookingStatus === "canceled" ? (
+  <button
+    disabled
+    className="w-full py-2 rounded-xl bg-red-200 text-red-700 font-semibold cursor-not-allowed"
+  >
+    Booking Cancelled
+  </button>
+) : (
+  <button
+    disabled
+    className="w-full py-2 rounded-xl bg-yellow-400 text-gray-800 font-semibold cursor-not-allowed"
+  >
+    Pending Approval
+  </button>
+)}
               </div>
             </div>
           ))}

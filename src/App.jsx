@@ -10,6 +10,7 @@ import SearchResults from "./components/searchresult";
 import { Toaster } from "react-hot-toast";
 import VehicleDetails from "./components/vehicledetails";
 import MyBookings from "./components/mybookings";
+
 import "./App.css";
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/vehicle/:id" element={<VehicleDetails />} />
         <Route path="/rides" element={<MyBookings />} />
-
+        
 
         <Route path="/host/*" element={<HostApp />} />
         

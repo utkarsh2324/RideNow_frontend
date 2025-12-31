@@ -201,6 +201,13 @@ export default function HostNavbar() {
                     Host-Vehicle
                   </NavLink>
                   <NavLink
+                    to="/host/requestbooking"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Booking Requests
+                  </NavLink>
+                  <NavLink
                     to="/host/bookings"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
                     onClick={() => setDropdownOpen(false)}
@@ -227,12 +234,99 @@ export default function HostNavbar() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)} className="text-blue-900">
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
+{/* 📱 Mobile Menu Button */}
+<div className="md:hidden">
+  <button
+    onClick={() => setIsOpen(!isOpen)}
+    className="text-blue-900 focus:outline-none"
+  >
+    {isOpen ? <X size={28} /> : <Menu size={28} />}
+  </button>
+</div>
+
+{/* 📱 Mobile Dropdown Menu */}
+{isOpen && (
+  <div className="md:hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-white z-50 overflow-y-auto shadow-lg">
+    <ul className="px-6 py-6 flex flex-col gap-5">
+
+      {host ? (
+        <>
+          <li>
+            <NavLink
+              to="/host/profile"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-800 font-medium"
+            >
+              Profile
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/host/document-verification"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-800 font-medium"
+            >
+              Document Verification
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/host/hostavehicle"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-800 font-medium"
+            >
+              Host Vehicle
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/host/requestbooking"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-800 font-medium"
+            >
+              Booking Requests
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/host/bookings"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-800 font-medium"
+            >
+              Bookings
+            </NavLink>
+          </li>
+
+          <li className="pt-4 border-t">
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsOpen(false);
+              }}
+              className="text-left text-red-600 font-semibold w-full"
+            >
+              Logout
+            </button>
+          </li>
+        </>
+      ) : (
+        <li>
+          <NavLink
+            to="/host/login"
+            onClick={() => setIsOpen(false)}
+            className="block text-blue-900 font-semibold"
+          >
+            Login / Signup
+          </NavLink>
+        </li>
+      )}
+    </ul>
+  </div>
+)}
       </div>
     </nav>
   );

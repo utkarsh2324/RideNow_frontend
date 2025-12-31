@@ -9,6 +9,7 @@ import MyVehicles from "./components/host/hostavailble";
 import HostVehicle from "./components/host/hostavehicle";
 import VehicleDetail from "./components/host/hostvehicledetails";
 import HostBookings from "./components/host/hostbooking";
+import HostBookingsconfirmed from "./components/host/confirbookingbyhost";
 import { Toaster } from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
@@ -35,7 +36,8 @@ function HostApp() {
         <Route path="hostavehicle" element={<MyVehicles />} />
         <Route path="add" element={<HostVehicle />} />
         <Route path="bookings" element={<HostBookings />} />
-<Route path="vehicle/:vehicleId" element={<VehicleDetail />} />
+        <Route path="vehicle/:vehicleId" element={<VehicleDetail />} />
+        <Route path="/requestbooking" element={<HostBookingsconfirmed />} />
       </Routes>
     </>
   );

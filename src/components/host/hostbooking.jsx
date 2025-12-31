@@ -19,7 +19,14 @@ export default function HostBookings() {
         return;
       }
 
-      setBookings(data.data || []);
+      // ✅ Only confirmed & completed bookings
+      const filtered = (data.data || []).filter(
+        (b) =>
+          b.bookingStatus === "confirmed" ||
+          b.bookingStatus === "completed"
+      );
+
+      setBookings(filtered);
     } catch (error) {
       console.error("Error fetching host bookings:", error);
       toast.error("Something went wrong while loading bookings.");
@@ -43,13 +50,13 @@ export default function HostBookings() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 px-6">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-blue-900 mb-6 text-center">
-          🛵 Your Vehicle Bookings
+          🛵 Active & Completed Bookings
         </h2>
 
         {bookings.length === 0 ? (
           <div className="text-center mt-20">
             <p className="text-lg text-gray-600 mb-4">
-              You don’t have any bookings yet.
+              No confirmed or completed bookings yet.
             </p>
           </div>
         ) : (
@@ -62,9 +69,7 @@ export default function HostBookings() {
               const statusColor =
                 booking.bookingStatus === "confirmed"
                   ? "bg-green-100 text-green-700 border-green-400"
-                  : booking.bookingStatus === "Completed"
-                  ? "bg-blue-100 text-blue-700 border-blue-400"
-                  : "bg-yellow-100 text-yellow-700 border-yellow-400";
+                  : "bg-blue-100 text-blue-700 border-blue-400";
 
               return (
                 <div
@@ -85,9 +90,11 @@ export default function HostBookings() {
                     </h3>
 
                     <p className="text-sm text-gray-700">
-                      📅 {new Date(booking.startDate).toLocaleDateString()} →{" "}
+                      📅{" "}
+                      {new Date(booking.startDate).toLocaleDateString()} →{" "}
                       {new Date(booking.endDate).toLocaleDateString()}
                     </p>
+
                     <p className="text-sm text-gray-700">
                       💰 Total Price: ₹{booking.totalPrice?.toFixed(2)}
                     </p>
@@ -95,7 +102,7 @@ export default function HostBookings() {
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${statusColor}`}
                     >
-                      {booking.bookingStatus}
+                      {booking.bookingStatus.toUpperCase()}
                     </span>
 
                     <hr className="my-2" />

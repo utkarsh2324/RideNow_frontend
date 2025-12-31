@@ -165,6 +165,13 @@ export default function Navbar() {
               >
                 Document Verification
               </NavLink>
+              <NavLink
+  to="/rides"
+  onClick={() => setIsOpen(false)}
+  className="text-blue-900 font-semibold"
+>
+  Rides
+</NavLink>
               <button
                 onClick={handleLogout}
                 className="flex items-center w-full px-4 py-2 mt-1 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-semibold"
