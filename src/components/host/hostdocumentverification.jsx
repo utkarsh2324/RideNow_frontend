@@ -7,7 +7,7 @@ export default function HostDocumentVerification() {
   const [aadharStatus, setAadharStatus] = useState("pending");
   const [existingDoc, setExistingDoc] = useState(null);
 
-  // 🔹 Fetch existing Aadhaar document on mount
+  /* ---------------- FETCH EXISTING DOC ---------------- */
   useEffect(() => {
     const fetchDoc = async () => {
       try {
@@ -25,21 +25,22 @@ export default function HostDocumentVerification() {
         toast.error("Failed to load Aadhaar info");
       }
     };
+
     fetchDoc();
   }, []);
 
-  // 🔹 Upload Handler
+  /* ---------------- UPLOAD HANDLER ---------------- */
   const handleUpload = async () => {
     try {
       if (!aadharFile) {
-        toast.error("Please upload an Aadhaar file first");
+        toast.error("Please select an Aadhaar file first");
         return;
       }
 
       const formData = new FormData();
       formData.append("aadhar", aadharFile);
 
-      toast.loading("Verifying Aadhaar...", { id: "verify" });
+      toast.loading("Uploading Aadhaar...", { id: "upload" });
 
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}hosts/verify-aadhar`,
@@ -50,111 +51,97 @@ export default function HostDocumentVerification() {
         }
       );
 
-      toast.dismiss("verify");
+      toast.dismiss("upload");
 
       if (res.data.success) {
-        toast.success(res.data.message || "Aadhaar verified successfully ✅");
-        setAadharStatus("approved");
-        setExistingDoc(res.data?.data?.docUrl || aadharFile.name);
+        toast.success("Aadhaar uploaded successfully. Verification pending.");
+
+        setExistingDoc(res.data.data?.docUrl);
+        setAadharStatus("pending");
       } else {
-        toast.error(res.data.message || "Aadhaar not found ❌");
-        setAadharStatus("rejected");
+        toast.error(res.data.message || "Upload failed");
       }
     } catch (err) {
-      toast.dismiss("verify");
-      console.error("Aadhaar verification error:", err);
-      toast.error("Error verifying Aadhaar. Please try again.");
+      toast.dismiss("upload");
+      console.error("Aadhaar upload error:", err);
+      toast.error("Error uploading Aadhaar. Please try again.");
     }
   };
 
-  // 🔹 Upload Section Renderer
-  const renderUploadSection = () => {
-    const docUrl = existingDoc;
-
-    return (
-      <div className="border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all duration-300">
-        <h2 className="text-2xl font-semibold text-blue-900 mb-3">
-          Aadhaar Card Verification
-        </h2>
-        <p className="text-gray-500 text-sm mb-4">
-          Upload your Aadhaar Card file (PDF, JPG, or PNG). Verification will
-          happen automatically.
-        </p>
-
-        {/* ✅ Show existing Aadhaar link if available */}
-        {docUrl && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-            <p className="text-blue-800 text-sm font-medium">
-              📄 Current Aadhaar URL:
-            </p>
-            <a
-              href={docUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-700 underline break-all text-sm"
-            >
-              {docUrl}
-            </a>
-          </div>
-        )}
-
-        {/* ✅ Upload input */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-          <input
-            type="file"
-            accept=".pdf, .jpg, .jpeg, .png"
-            onChange={(e) => setAadharFile(e.target.files[0])}
-            className="w-full border border-gray-300 rounded-lg p-2 cursor-pointer focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={handleUpload}
-            className={`px-6 py-2 rounded-lg font-semibold text-white transition duration-300 ${
-              docUrl
-                ? "bg-blue-800 hover:bg-blue-900"
-                : "bg-blue-900 hover:bg-blue-800"
-            }`}
-          >
-            {docUrl ? "Re-upload & Verify" : "Upload & Verify"}
-          </button>
-        </div>
-
-        {/* ✅ Status Display */}
-        <div className="mt-4 text-sm">
-          {aadharStatus === "approved" && (
-            <p className="text-green-600 font-medium">✅ Verified</p>
-          )}
-          {aadharStatus === "pending" && (
-            <p className="text-yellow-600 font-medium">⏳ Pending Verification</p>
-          )}
-          {aadharStatus === "rejected" && (
-            <p className="text-red-600 font-medium">❌ Verification Failed</p>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  // 🔹 Main Page Render
+  /* ---------------- UI ---------------- */
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4 py-16">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-2xl border border-gray-200">
+      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-2xl border">
         <h1 className="text-4xl font-bold text-blue-900 text-center mb-4">
-          Host Document Verification
+          Host Document Upload
         </h1>
+
         <p className="text-center text-gray-600 mb-8">
-          Upload your Aadhaar Card to verify your host account securely.
+          Upload your Aadhaar Card. Our team will manually verify it.
         </p>
 
-        {renderUploadSection()}
+        <div className="border border-gray-200 rounded-2xl p-6">
+          <h2 className="text-2xl font-semibold text-blue-900 mb-2">
+            Aadhaar Card
+          </h2>
 
-        {/* ✅ Success banner */}
-        {aadharStatus === "approved" && (
-          <div className="text-center bg-green-50 border border-green-200 rounded-xl py-4 mt-6">
-            <p className="text-green-700 font-semibold">
-              🎉 Aadhaar verified successfully! Your host account is verified.
-            </p>
+          <p className="text-gray-500 text-sm mb-4">
+            Accepted formats: PDF, JPG, PNG
+          </p>
+
+          {/* Existing document */}
+          {existingDoc && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <p className="text-blue-800 text-sm font-medium mb-1">
+                📄 Uploaded document:
+              </p>
+              <a
+                href={existingDoc}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700 underline break-all text-sm"
+              >
+                View Aadhaar
+              </a>
+            </div>
+          )}
+
+          {/* Upload */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => setAadharFile(e.target.files[0])}
+              className="w-full border border-gray-300 rounded-lg p-2"
+            />
+
+            <button
+              onClick={handleUpload}
+              className="px-6 py-2 rounded-lg font-semibold text-white bg-blue-900 hover:bg-blue-800 transition"
+            >
+              {existingDoc ? "Re-upload" : "Upload"}
+            </button>
           </div>
-        )}
+
+          {/* Status */}
+          <div className="mt-4 text-sm">
+            {aadharStatus === "pending" && (
+              <p className="text-yellow-600 font-medium">
+                ⏳ Verification pending (manual review)
+              </p>
+            )}
+            {aadharStatus === "approved" && (
+              <p className="text-green-600 font-medium">
+                ✅ Approved
+              </p>
+            )}
+            {aadharStatus === "rejected" && (
+              <p className="text-red-600 font-medium">
+                ❌ Rejected – please re-upload
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

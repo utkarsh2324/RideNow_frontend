@@ -45,7 +45,7 @@ export default function HostBookingsconfirmed() {
       setConfirming(bookingId);
 
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}hosts/vehicles/${vehicleId}/bookings/${bookingId}/confirm`,
+        `${import.meta.env.VITE_BACKEND_URL}vehicles/host/vehicles/${vehicleId}/bookings/${bookingId}/confirm`,
         {
           method: "PATCH",
           credentials: "include",
