@@ -133,7 +133,7 @@ const Login = () => {
         {/* Left Section */}
         <div className="hidden md:flex flex-1 bg-blue-900 text-white items-center justify-center p-10">
           <h2 className="text-3xl font-bold leading-snug">
-            Welcome Back! <br /> Sign in to continue 🎬
+            Welcome Back! <br /> Sign in to continue 
           </h2>
         </div>
 
