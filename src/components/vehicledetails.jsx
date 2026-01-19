@@ -220,7 +220,20 @@ export default function VehicleDetails() {
                 </span>
               )}
             </div>
+              {/* 🔹 PAYMENT INSTRUCTION */}
+<div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 text-sm text-gray-700">
+  <p className="font-semibold text-gray-800 mb-1">
+    💳 Payment Information
+  </p>
 
+  <p>
+    Payment will be collected directly by the host when you receive the vehicle.
+  </p>
+
+  <p className="mt-1 text-gray-600">
+    Currently, <span className="font-medium">cash or direct payment</span> is supported at pickup.
+  </p>
+</div>
             {/* 🔹 PRICE CARD */}
             {priceData && (
               <div className="mt-6 bg-blue-900 text-white rounded-2xl p-5">
