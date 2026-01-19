@@ -187,7 +187,7 @@ const HostLogin = () => {
             freely. Host your 2-wheeler effortlessly and get instant payouts!
           </p>
           <img
-            src="/Hostlogin.png"
+            src="/hostlogin.jpeg"
             alt="Host Benefits"
             className="w-72 md:w-80 lg:w-96 animate-bounce-slow"
           />

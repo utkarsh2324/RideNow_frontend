@@ -77,40 +77,28 @@ export default function HostHome() {
 
       {/* Benefits Section */}
       <section className="py-20 px-6 md:px-16 bg-white text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-12">
-          Why Become a RideNow Host?
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 max-w-6xl mx-auto">
-          <div className="flex flex-col items-center">
-            <Wallet className="h-12 w-12 text-blue-900 mb-4" />
-            <h3 className="font-semibold text-lg mb-2">Earn Effortlessly</h3>
-            <p className="text-gray-600 text-sm">
-              Let your 2-wheeler pay for itself while you’re not using it.
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <ShieldCheck className="h-12 w-12 text-blue-900 mb-4" />
-            <h3 className="font-semibold text-lg mb-2">Full Insurance</h3>
-            <p className="text-gray-600 text-sm">
-              Every trip is protected by industry-leading insurance and support.
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <Timer className="h-12 w-12 text-blue-900 mb-4" />
-            <h3 className="font-semibold text-lg mb-2">Fast Setup</h3>
-            <p className="text-gray-600 text-sm">
-              List your bike or scooter in minutes and start getting bookings right away.
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <Star className="h-12 w-12 text-blue-900 mb-4" />
-            <h3 className="font-semibold text-lg mb-2">Trusted Platform</h3>
-            <p className="text-gray-600 text-sm">
-              Thousands of satisfied hosts across India trust RideNow.
-            </p>
-          </div>
-        </div>
-      </section>
+  <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-12">
+    Why Become a RideNow Host?
+  </h2>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-10 max-w-6xl mx-auto justify-items-center">
+    <div className="flex flex-col items-center">
+      <Wallet className="h-12 w-12 text-blue-900 mb-4" />
+      <h3 className="font-semibold text-lg mb-2">Earn Effortlessly</h3>
+      <p className="text-gray-600 text-sm max-w-xs">
+        Let your 2-wheeler pay for itself while you’re not using it.
+      </p>
+    </div>
+
+    <div className="flex flex-col items-center">
+      <Timer className="h-12 w-12 text-blue-900 mb-4" />
+      <h3 className="font-semibold text-lg mb-2">Fast Setup</h3>
+      <p className="text-gray-600 text-sm max-w-xs">
+        List your bike or scooter in minutes and start getting bookings right away.
+      </p>
+    </div>
+  </div>
+</section>
 
       {/* How It Works */}
       <section className="py-20 px-6 md:px-16 bg-gradient-to-b from-blue-50 to-white text-center">

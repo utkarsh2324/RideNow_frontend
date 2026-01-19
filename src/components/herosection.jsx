@@ -32,7 +32,7 @@ export default function HeroSection() {
   return (
     <section
       className="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/hero-scooty1.png')" }}
+      style={{ backgroundImage: "url('/hero-scooty2.png')" }}
     >
       <div className="absolute inset-0 bg-black/40"></div>
 
