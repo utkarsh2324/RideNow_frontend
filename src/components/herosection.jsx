@@ -17,7 +17,6 @@ export default function HeroSection() {
       return;
     }
 
-    // ✅ Build query string safely
     const query = new URLSearchParams({
       location,
       fromDate,
@@ -34,8 +33,10 @@ export default function HeroSection() {
       className="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: "url('/hero-scooty2.png')" }}
     >
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/40"></div>
 
+      {/* Main Content */}
       <div className="relative z-10 text-center text-white px-6 w-full">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
           Ride Your Freedom with <span className="text-blue-900">RideNow</span>
@@ -48,20 +49,24 @@ export default function HeroSection() {
         <div className="max-w-2xl mx-auto bg-white/20 backdrop-blur-lg rounded-2xl p-6 space-y-4 shadow-lg">
           {/* Location */}
           <div className="text-left">
-            <label className="block text-sm font-medium text-white mb-1">Location</label>
+            <label className="block text-sm font-medium text-white mb-1">
+              Location
+            </label>
             <input
               type="text"
               placeholder="Enter Location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-white/90 focus:ring-2 focus:ring-blue-500 outline-none text-gray-800 placeholder-gray-500"
+              className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
             />
           </div>
 
           {/* Dates */}
           <div className="grid grid-cols-2 gap-4">
             <div className="text-left">
-              <label className="block text-sm font-medium text-white mb-1">From Date</label>
+              <label className="block text-sm font-medium text-white mb-1">
+                From Date
+              </label>
               <input
                 type="date"
                 value={fromDate}
@@ -70,7 +75,9 @@ export default function HeroSection() {
               />
             </div>
             <div className="text-left">
-              <label className="block text-sm font-medium text-white mb-1">To Date</label>
+              <label className="block text-sm font-medium text-white mb-1">
+                To Date
+              </label>
               <input
                 type="date"
                 value={toDate}
@@ -83,7 +90,9 @@ export default function HeroSection() {
           {/* Times */}
           <div className="grid grid-cols-2 gap-4">
             <div className="text-left">
-              <label className="block text-sm font-medium text-white mb-1">From Time</label>
+              <label className="block text-sm font-medium text-white mb-1">
+                From Time
+              </label>
               <input
                 type="time"
                 value={fromTime}
@@ -92,7 +101,9 @@ export default function HeroSection() {
               />
             </div>
             <div className="text-left">
-              <label className="block text-sm font-medium text-white mb-1">To Time</label>
+              <label className="block text-sm font-medium text-white mb-1">
+                To Time
+              </label>
               <input
                 type="time"
                 value={toTime}
@@ -105,11 +116,23 @@ export default function HeroSection() {
           {/* Search Button */}
           <button
             onClick={handleSearch}
-            className="cursor-pointer w-full px-5 py-3 bg-blue-900 hover:bg-blue-800 text-white rounded-xl font-semibold shadow-md transition-all duration-300"
+            className="w-full px-5 py-3 bg-blue-900 hover:bg-blue-800 text-white rounded-xl font-semibold shadow-md"
           >
             Search
           </button>
         </div>
+      </div>
+
+      {/* 🔻 HERO FOOTER (NOW VISIBLE) */}
+      <div className="absolute bottom-4 w-full text-center text-white text-sm opacity-90 px-4 z-10">
+        <p className="font-medium">
+          © 2026 RideNow. All rights reserved.
+        </p>
+        <p className="mt-1 text-l md:text-xl font-bold opacity-80">
+          For support:{" "}
+          <span className="font-medium">+91 8707230485</span> |{" "}
+          <span className="font-medium">+91 6387634132</span>
+        </p>
       </div>
     </section>
   );

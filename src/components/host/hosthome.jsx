@@ -142,9 +142,20 @@ export default function HostHome() {
       </section>
 
       {/* Footer */}
-      <footer className="py-6 text-center text-gray-500 text-sm">
-        © {new Date().getFullYear()} RideNow Host Platform. All rights reserved.
-      </footer>
+      {/* Footer */}
+<footer className="py-8 text-center bg-gray-50 text-gray-700">
+  <p className="text-base md:text-lg font-semibold">
+    © {new Date().getFullYear()} RideNow Host Platform. All rights reserved.
+  </p>
+
+  <p className="mt-2 text-lg md:text-xl font-bold text-blue-900">
+    📞 Support
+  </p>
+
+  <p className="mt-1 text-base md:text-lg font-semibold tracking-wide">
+    +91 8707230485 &nbsp;|&nbsp; +91 6387634132
+  </p>
+</footer>
     </div>
   );
 }
