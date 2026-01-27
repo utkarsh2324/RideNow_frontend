@@ -100,7 +100,7 @@ export default function VehicleDetail() {
     } catch (error) {
       // ⚠️ Network / unexpected error
       toast.error(
-        error?.message || "Something went wrong while updating vehicle"
+        data?.message || "Something went wrong while updating vehicle"
       );
     }
   };
