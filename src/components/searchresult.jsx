@@ -123,7 +123,7 @@ export default function SearchResults() {
         )}&fromDate=${fromDate}&toDate=${toDate}&fromTime=${fromTime}&toTime=${toTime}`
       )
   }
-  className="w-full bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium"
+  className="cursor-pointer w-full bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium"
 >
   View Details
 </button>

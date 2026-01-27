@@ -94,10 +94,10 @@ export default function VehicleDetails() {
       toast.error("Price not available.");
       return;
     }
-
+  
     try {
       setBooking(true);
-
+  
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}vehicles/book/${id}`,
         {
@@ -112,11 +112,13 @@ export default function VehicleDetails() {
           }),
         }
       );
-
+  
       const data = await res.json();
-
+  
       if (res.ok) {
-        toast.success("Vehicle booked successfully!");
+        toast.success(
+          data.message || "Booking request sent to host successfully"
+        );
         navigate("/rides");
       } else {
         toast.error(data.message || "Booking failed.");
@@ -255,7 +257,7 @@ export default function VehicleDetails() {
             <button
               onClick={handleBooking}
               disabled={booking}
-              className={`w-full mt-6 py-4 rounded-2xl text-white font-semibold text-lg transition ${
+              className={` cursor-pointer w-full mt-6 py-4 rounded-2xl text-white font-semibold text-lg transition ${
                 booking
                   ? "bg-gray-400"
                   : "bg-gradient-to-r from-blue-900 to-blue-700 hover:opacity-90"
