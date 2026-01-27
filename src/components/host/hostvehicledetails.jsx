@@ -70,7 +70,7 @@ export default function VehicleDetail() {
       toast.error("Weekend price cannot be less than weekday price");
       return;
     }
-  
+
     try {
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}vehicles/update/${vehicleId}`,
@@ -83,25 +83,19 @@ export default function VehicleDetail() {
           body: JSON.stringify(updateData),
         }
       );
-  
+
       const data = await res.json();
-  
-      // ✅ SHOW BACKEND ERROR MESSAGE
+
       if (!res.ok) {
-        toast.error(
-          data.message || "Failed to update vehicle"
-        );
+        toast.error(data.message || "Failed to update vehicle");
         return;
       }
-  
-      toast.success(data.message || "Vehicle updated successfully");
+
+      toast.success("Vehicle updated successfully");
       setVehicle(data.data);
       setEditing(false);
     } catch (error) {
-      // ⚠️ Network / unexpected error
-      toast.error(
-        data?.message || "Something went wrong while updating vehicle"
-      );
+      toast.error("Something went wrong while updating vehicle");
     }
   };
 
