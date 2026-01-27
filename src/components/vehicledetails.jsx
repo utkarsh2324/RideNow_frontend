@@ -11,8 +11,8 @@ export default function VehicleDetails() {
   const city = queryParams.get("city");
   const fromDate = queryParams.get("fromDate");
   const toDate = queryParams.get("toDate");
-  const fromTime = queryParams.get("fromTime");
-  const toTime = queryParams.get("toTime");
+  const fromTime = queryParams.get("fromTime") || "10:00";
+  const toTime = queryParams.get("toTime") || "18:00";
 
   const [vehicle, setVehicle] = useState(null);
   const [priceData, setPriceData] = useState(null);
@@ -29,6 +29,7 @@ export default function VehicleDetails() {
       );
 
       const data = await res.json();
+
       if (!res.ok) {
         toast.error(data.message || "Failed to fetch vehicle.");
         navigate("/search");
@@ -42,36 +43,35 @@ export default function VehicleDetails() {
     }
   };
 
-  /* ---------------- FETCH PRICE ---------------- */
+  /* ---------------- PRICE PREVIEW (BACKEND) ---------------- */
 
-  const fetchPricing = async (vehicleDetails) => {
+  const fetchPricePreview = async () => {
     try {
-      const payload = {
-        city: city || vehicleDetails.city,
-        model: vehicleDetails.scootyModel,
-        vehicle_type: "Scooter",
-        fuel_type: "Petrol",
-        start_date: fromDate,
-        end_date: toDate,
-      };
-
       const res = await fetch(
-        "https://arjun9036-pricingmodel.hf.space/predict",
+        `${import.meta.env.VITE_BACKEND_URL}vehicles/price-preview/${id}`,
         {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({
+            fromDate,
+            toDate,
+            fromTime,
+            toTime,
+          }),
         }
       );
 
       const data = await res.json();
-      if (data?.total_price_estimate) {
-        setPriceData(data);
-      } else {
-        toast.error("Failed to fetch price.");
+
+      if (!res.ok) {
+        toast.error(data.message || "Failed to calculate price");
+        return;
       }
+
+      setPriceData(data.data);
     } catch (error) {
-      toast.error("Pricing service error.");
+      toast.error("Price preview failed");
     } finally {
       setLoading(false);
     }
@@ -83,9 +83,9 @@ export default function VehicleDetails() {
 
   useEffect(() => {
     if (vehicle && fromDate && toDate) {
-      fetchPricing(vehicle);
+      fetchPricePreview();
     }
-  }, [vehicle]);
+  }, [vehicle, fromDate, toDate]);
 
   /* ---------------- BOOK VEHICLE ---------------- */
 
@@ -97,13 +97,6 @@ export default function VehicleDetails() {
 
     try {
       setBooking(true);
-      const payload = {
-        fromDate,
-        toDate,
-        fromTime,
-        toTime,
-        totalPrice: priceData.total_price_estimate,
-      };
 
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}vehicles/book/${id}`,
@@ -111,7 +104,12 @@ export default function VehicleDetails() {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({
+            fromDate,
+            toDate,
+            fromTime,
+            toTime,
+          }),
         }
       );
 
@@ -132,20 +130,25 @@ export default function VehicleDetails() {
 
   /* ---------------- UI ---------------- */
 
-  if (loading)
+  if (loading) {
     return (
       <div className="h-screen flex justify-center items-center">
         Loading vehicle details...
       </div>
     );
+  }
 
-  if (!vehicle)
-    return <div className="h-screen flex justify-center">Vehicle not found</div>;
+  if (!vehicle) {
+    return (
+      <div className="h-screen flex justify-center">
+        Vehicle not found
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-3xl overflow-hidden">
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* ================= LEFT : PHOTOS ================= */}
@@ -164,7 +167,6 @@ export default function VehicleDetails() {
 
           {/* ================= RIGHT : DETAILS ================= */}
           <div className="p-5 sm:p-8">
-
             <h2 className="text-2xl sm:text-3xl font-bold text-blue-900">
               {vehicle.scootyModel}
             </h2>
@@ -173,13 +175,13 @@ export default function VehicleDetails() {
               📍 {vehicle.location}
             </p>
 
-            {/* 🔹 DATE & TIME */}
+            {/* DATE & TIME */}
             <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-700">
               <p>📅 {fromDate} → {toDate}</p>
-              <p>⏰ {fromTime || "10:00"} → {toTime || "18:00"}</p>
+              <p>⏰ {fromTime} → {toTime}</p>
             </div>
 
-            {/* 🔹 HOST CARD */}
+            {/* HOST CARD */}
             {vehicle.host && (
               <div className="mt-6 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center gap-4">
                 <img
@@ -208,7 +210,7 @@ export default function VehicleDetails() {
               </div>
             )}
 
-            {/* 🔹 VERIFIED STATUS ONLY */}
+            {/* VERIFIED STATUS */}
             <div className="mt-6 bg-gray-50 border rounded-2xl p-4 text-sm">
               {vehicle.isVerified ? (
                 <span className="text-green-700 bg-green-100 px-3 py-1 rounded-full text-xs">
@@ -220,36 +222,36 @@ export default function VehicleDetails() {
                 </span>
               )}
             </div>
-              {/* 🔹 PAYMENT INSTRUCTION */}
-<div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 text-sm text-gray-700">
-  <p className="font-semibold text-gray-800 mb-1">
-    💳 Payment Information
-  </p>
 
-  <p>
-    Payment will be collected directly by the host when you receive the vehicle.
-  </p>
+            {/* PAYMENT INFO */}
+            <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 text-sm text-gray-700">
+              <p className="font-semibold text-gray-800 mb-1">
+                💳 Payment Information
+              </p>
+              <p>
+                Payment will be collected directly by the host at pickup.
+              </p>
+              <p className="mt-1 text-gray-600">
+                Cash or direct payment is currently supported.
+              </p>
+            </div>
 
-  <p className="mt-1 text-gray-600">
-    Currently, <span className="font-medium">cash or direct payment</span> is supported at pickup.
-  </p>
-</div>
-            {/* 🔹 PRICE CARD */}
+            {/* PRICE CARD */}
             {priceData && (
               <div className="mt-6 bg-blue-900 text-white rounded-2xl p-5">
                 <p className="text-sm opacity-80">
-                  Total for {priceData.total_days} days
+                  Total for {priceData.totalDays} days
                 </p>
                 <p className="text-2xl font-bold mt-1">
-                  ₹{priceData.total_price_estimate.toFixed(2)}
+                  ₹{priceData.totalPrice}
                 </p>
                 <p className="text-xs opacity-70 mt-1">
-                  Avg/day ₹{priceData.average_daily_price?.toFixed(2)}
+                  Avg/day ₹{priceData.averagePerDay}
                 </p>
               </div>
             )}
 
-            {/* 🔹 BOOK BUTTON */}
+            {/* BOOK BUTTON */}
             <button
               onClick={handleBooking}
               disabled={booking}
@@ -261,7 +263,6 @@ export default function VehicleDetails() {
             >
               {booking ? "Booking..." : "Book Vehicle"}
             </button>
-
           </div>
         </div>
       </div>

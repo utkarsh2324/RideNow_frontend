@@ -4,7 +4,8 @@ import {
   FileText,
   MapPin,
   Bike,
-  Navigation
+  Navigation,
+  IndianRupee,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -13,6 +14,8 @@ export default function HostVehicle() {
     scootyModel: "",
     location: "",
     city: "",
+    weekdayPrice: "",
+    weekendPrice: "",
     photos: [],
     rc: null,
   });
@@ -95,8 +98,25 @@ export default function HostVehicle() {
   /* ---------------- HOST VEHICLE ---------------- */
 
   const handleHostVehicle = async () => {
-    if (!formData.scootyModel || !formData.location || !formData.city) {
+    if (
+      !formData.scootyModel ||
+      !formData.location ||
+      !formData.city
+    ) {
       toast.error("Please fill all required details");
+      return;
+    }
+
+    if (!formData.weekdayPrice || !formData.weekendPrice) {
+      toast.error("Please enter weekday and weekend price");
+      return;
+    }
+
+    if (
+      Number(formData.weekendPrice) <
+      Number(formData.weekdayPrice)
+    ) {
+      toast.error("Weekend price cannot be less than weekday price");
       return;
     }
 
@@ -112,6 +132,8 @@ export default function HostVehicle() {
       vehicleForm.append("scootyModel", formData.scootyModel);
       vehicleForm.append("location", formData.location);
       vehicleForm.append("city", formData.city);
+      vehicleForm.append("weekdayPrice", formData.weekdayPrice);
+      vehicleForm.append("weekendPrice", formData.weekendPrice);
       vehicleForm.append("rc", formData.rc);
 
       formData.photos.forEach((photo) => {
@@ -134,14 +156,14 @@ export default function HostVehicle() {
         return;
       }
 
-      toast.success(
-        "Vehicle hosted successfully! RC verification pending."
-      );
+      toast.success("Vehicle hosted successfully!");
 
       setFormData({
         scootyModel: "",
         location: "",
         city: "",
+        weekdayPrice: "",
+        weekendPrice: "",
         photos: [],
         rc: null,
       });
@@ -222,6 +244,52 @@ export default function HostVehicle() {
             />
           </div>
 
+          {/* Pricing */}
+         
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div>
+    <label className="block font-medium text-gray-700 mb-1">
+      Weekday Price (₹ / day)
+    </label>
+    <div className="flex items-center gap-2">
+      <IndianRupee className="w-4 h-4 text-gray-500" />
+      <input
+        type="number"
+        name="weekdayPrice"
+        value={formData.weekdayPrice}
+        onChange={handleChange}
+        placeholder="e.g. 350"
+        min="1"
+        className="w-full p-2 border rounded-lg"
+      />
+    </div>
+    <p className="text-xs text-gray-500 mt-1">
+      Recommended range: ₹300–₹400 per day. Vehicles priced in this range tend to receive higher weekday bookings.
+    </p>
+  </div>
+
+  <div>
+    <label className="block font-medium text-gray-700 mb-1">
+      Weekend Price (₹ / day)
+    </label>
+    <div className="flex items-center gap-2">
+      <IndianRupee className="w-4 h-4 text-gray-500" />
+      <input
+        type="number"
+        name="weekendPrice"
+        value={formData.weekendPrice}
+        onChange={handleChange}
+        placeholder="e.g. 550"
+        min="1"
+        className="w-full p-2 border rounded-lg"
+      />
+    </div>
+    <p className="text-xs text-gray-500 mt-1">
+      Recommended range: ₹500–₹600 per day. Weekend demand is typically higher, allowing for better pricing.
+    </p>
+  </div>
+</div>
+
           {/* Photos */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">
@@ -255,7 +323,7 @@ export default function HostVehicle() {
             />
             {formData.rc && (
               <p className="text-yellow-700 text-sm mt-2">
-                ⏳ RC uploaded. Verification pending (manual).
+                ⏳ RC uploaded. Verification pending.
               </p>
             )}
           </div>
