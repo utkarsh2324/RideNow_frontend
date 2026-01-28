@@ -8,7 +8,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
   const [photoFile, setPhotoFile] = useState(null);
   const [cameraStream, setCameraStream] = useState(null);
-
+  const [previewUrl, setPreviewUrl] = useState(null);
   // Fetch current user on mount
   useEffect(() => {
     const fetchProfile = async () => {
@@ -55,15 +55,26 @@ export default function Profile() {
   const handleCapture = () => {
     const video = document.getElementById("video");
     const canvas = document.createElement("canvas");
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.getContext("2d").drawImage(video, 0, 0);
 
     canvas.toBlob((blob) => {
       const file = new File([blob], "selfie.jpg", { type: "image/jpeg" });
       setPhotoFile(file);
+      setPreviewUrl(URL.createObjectURL(blob));
+
+      cameraStream?.getTracks().forEach((t) => t.stop());
+      setCameraStream(null);
+
+      toast.success("Photo captured");
     }, "image/jpeg");
+  };
+
+  const handleRetake = () => {
+    setPhotoFile(null);
+    setPreviewUrl(null);
   };
 
   // Save changes for each section
@@ -211,37 +222,51 @@ export default function Profile() {
             onClick={() =>
               setEditSection(editSection === "photo" ? null : "photo")
             }
-            disabled={editSection && editSection !== "photo"}
-            className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
+            className="cursor-pointer px-3 py-1 text-sm rounded-lg border hover:bg-gray-100"
           >
             {editSection === "photo" ? "Cancel" : "Edit"}
           </button>
         </div>
+
         {editSection === "photo" && (
           <div className="mt-4 flex flex-col items-center gap-4">
-            <video
-              id="video"
-              autoPlay
-              playsInline
-              className="w-40 h-40 rounded-lg border shadow"
-            ></video>
-            <button
-              onClick={handleCapture}
-              className="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 cursor-pointer"
-            >
-              Capture Selfie
-            </button>
-            <button
-  onClick={handleSave}
-  disabled={!photoFile}
-  className={`px-4 py-2 rounded-lg w-full sm:w-auto border-2 ${
-    photoFile
-      ? "border-blue-800 text-blue-900 hover:bg-blue-50 cursor-pointer"
-      : "border-gray-400 text-gray-500 cursor-not-allowed"
-  }`}
->
-  Upload Selfie
-</button>
+            {previewUrl ? (
+              <>
+                <img
+                  src={previewUrl}
+                  className="w-40 h-40 rounded-lg object-cover border"
+                />
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleRetake}
+                    className="cursor-pointer px-4 py-2 border rounded-lg"
+                  >
+                    Retake
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="cursor-pointer px-4 py-2 bg-blue-900 text-white rounded-lg"
+                  >
+                    Upload Selfie
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <video
+                  id="video"
+                  autoPlay
+                  playsInline
+                  className="w-40 h-40 rounded-lg border"
+                />
+                <button
+                  onClick={handleCapture}
+                  className="cursor-pointer px-4 py-2 bg-blue-900 text-white rounded-lg"
+                >
+                  Capture Selfie
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -255,7 +280,7 @@ export default function Profile() {
               setEditSection(editSection === "basic" ? null : "basic")
             }
             disabled={editSection && editSection !== "basic"}
-            className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
+            className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
           >
             {editSection === "basic" ? "Cancel" : "Edit"}
           </button>
@@ -296,7 +321,7 @@ export default function Profile() {
         {editSection === "basic" && (
           <button
             onClick={handleSave}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto"
+            className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto"
           >
             Save Changes
           </button>
@@ -312,7 +337,7 @@ export default function Profile() {
               setEditSection(editSection === "contact" ? null : "contact")
             }
             disabled={editSection && editSection !== "contact"}
-            className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
+            className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
           >
             {editSection === "contact" ? "Cancel" : "Edit"}
           </button>
@@ -356,7 +381,7 @@ export default function Profile() {
         {editSection === "contact" && (
           <button
             onClick={handleSave}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto"
+            className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto"
           >
             Save Changes
           </button>

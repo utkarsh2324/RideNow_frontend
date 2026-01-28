@@ -13,7 +13,7 @@ export default function HostProfile() {
     newPassword: "",
     confirmPassword: "",
   });
-
+  const [previewUrl, setPreviewUrl] = useState(null);
   // 🔹 Fetch host profile
   useEffect(() => {
     const fetchHostProfile = async () => {
@@ -41,9 +41,8 @@ export default function HostProfile() {
     setPasswordData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // 🔹 Start/stop camera
   useEffect(() => {
-    if (editSection === "photo") {
+    if (editSection === "photo" && !previewUrl) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
@@ -51,68 +50,64 @@ export default function HostProfile() {
           const video = document.getElementById("hostVideo");
           if (video) video.srcObject = stream;
         })
-        .catch((err) => console.error("Camera access denied:", err));
-    } else {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach((track) => track.stop());
-        setCameraStream(null);
-      }
+        .catch(() => toast.error("Camera access denied"));
     }
-  }, [editSection]);
 
-  // 🔹 Capture photo
+    return () => {
+      cameraStream?.getTracks().forEach((t) => t.stop());
+    };
+  }, [editSection, previewUrl]);
+
   const handleCapture = () => {
     const video = document.getElementById("hostVideo");
-    if (!video) return toast.error("Camera not active.");
     const canvas = document.createElement("canvas");
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.getContext("2d").drawImage(video, 0, 0);
+
     canvas.toBlob((blob) => {
       const file = new File([blob], "selfie.jpg", { type: "image/jpeg" });
       setPhotoFile(file);
-      toast.success("Selfie captured!");
+      setPreviewUrl(URL.createObjectURL(blob));
+
+      cameraStream?.getTracks().forEach((t) => t.stop());
+      setCameraStream(null);
+
+      toast.success("Selfie captured");
     }, "image/jpeg");
   };
 
-  // 🔹 Upload captured photo
+  const handleRetake = () => {
+    setPhotoFile(null);
+    setPreviewUrl(null);
+  };
+
   const handleUploadPhoto = async () => {
-    try {
-      if (!photoFile) {
-        toast.error("Please capture a selfie first.");
-        return;
-      }
+    if (!photoFile) return toast.error("Capture a selfie first");
 
-      const formDataPhoto = new FormData();
-      formDataPhoto.append("photo", photoFile);
+    const fd = new FormData();
+    fd.append("photo", photoFile);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}hosts/profile/upload-photo`,
-        {
-          method: "POST",
-          credentials: "include",
-          body: formDataPhoto,
-        }
-      );
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}hosts/profile/upload-photo`,
+      { method: "POST", credentials: "include", body: fd }
+    );
 
-      const data = await res.json();
-      const payload = data?.data ?? data;
+    const json = await res.json();
+    const payload = json?.data ?? json;
 
-      if (res.ok && payload?.photo) {
-        setHost((prev) => ({
-          ...prev,
-          profile: { ...prev.profile, photo: payload.photo },
-        }));
-        toast.success("Profile photo uploaded successfully!");
-        setPhotoFile(null);
-        setEditSection(null);
-      } else {
-        toast.error(data.message || "Failed to upload photo.");
-      }
-    } catch (err) {
-      console.error("Error uploading profile photo:", err);
-      toast.error("Something went wrong. Try again later.");
+    if (res.ok) {
+      setHost((p) => ({
+        ...p,
+        profile: { ...p.profile, photo: payload.photo },
+      }));
+      toast.success("Profile photo uploaded!");
+      setEditSection(null);
+      setPhotoFile(null);
+      setPreviewUrl(null);
+    } else {
+      toast.error(payload.message || "Upload failed");
     }
   };
 
@@ -320,14 +315,13 @@ export default function HostProfile() {
       <div className="bg-white shadow-md rounded-2xl p-6">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Camera className="w-5 h-5 text-blue-900" /> Profile Photo
+            <Camera className="w-5 h-5" /> Profile Photo
           </h3>
           <button
             onClick={() =>
               setEditSection(editSection === "photo" ? null : "photo")
             }
-            disabled={editSection && editSection !== "photo"}
-            className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
+            className="cursor-pointer px-3 py-1 text-sm border rounded-lg"
           >
             {editSection === "photo" ? "Cancel" : "Edit"}
           </button>
@@ -335,35 +329,46 @@ export default function HostProfile() {
 
         {editSection === "photo" && (
           <div className="mt-4 flex flex-col items-center gap-4">
-            <video
-              id="hostVideo"
-              autoPlay
-              playsInline
-              className="w-48 h-48 rounded-lg border shadow"
-            ></video>
-
-            <button
-              onClick={handleCapture}
-              className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
-            >
-              Capture Selfie
-            </button>
-
-            <button
-              onClick={handleUploadPhoto}
-              disabled={!photoFile}
-              className={`px-4 py-2 rounded-lg w-full sm:w-auto border-2 ${
-                photoFile
-                  ? "border-blue-800 text-blue-900 hover:bg-blue-50 cursor-pointer"
-                  : "border-gray-400 text-gray-500 cursor-not-allowed"
-              }`}
-            >
-              Upload Selfie
-            </button>
+            {previewUrl ? (
+              <>
+                <img
+                  src={previewUrl}
+                  className="w-48 h-48 rounded-lg object-cover border"
+                />
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleRetake}
+                    className="cursor-pointer px-4 py-2 border rounded-lg"
+                  >
+                    Retake
+                  </button>
+                  <button
+                    onClick={handleUploadPhoto}
+                    className="cursor-pointer px-4 py-2 bg-blue-700 text-white rounded-lg"
+                  >
+                    Upload Selfie
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <video
+                  id="hostVideo"
+                  autoPlay
+                  playsInline
+                  className="w-48 h-48 rounded-lg border"
+                />
+                <button
+                  onClick={handleCapture}
+                  className="cursor-pointer px-4 py-2 bg-blue-700 text-white rounded-lg"
+                >
+                  Capture Selfie
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
-
       {/* 🏦 UPI ID Section */}
       <div className="bg-white shadow-md rounded-2xl p-6">
         <div className="flex justify-between items-center">
@@ -373,7 +378,7 @@ export default function HostProfile() {
           <button
             onClick={() => setEditSection(editSection === "upi" ? null : "upi")}
             disabled={editSection && editSection !== "upi"}
-            className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
+            className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
           >
             {editSection === "upi" ? "Cancel" : host.upiid ? "Edit" : "Add"}
           </button>
@@ -402,7 +407,7 @@ export default function HostProfile() {
         {editSection === "upi" && (
           <button
             onClick={handleSaveUpi}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Save Changes
           </button>
@@ -416,7 +421,7 @@ export default function HostProfile() {
           <button
             onClick={() => setEditSection(editSection === "basic" ? null : "basic")}
             disabled={editSection && editSection !== "basic"}
-            className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
+            className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
           >
             {editSection === "basic" ? "Cancel" : "Edit"}
           </button>
@@ -457,7 +462,7 @@ export default function HostProfile() {
         {editSection === "basic" && (
           <button
             onClick={handleSave}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Save Changes
           </button>
@@ -471,7 +476,7 @@ export default function HostProfile() {
           <button
             onClick={() => setEditSection(editSection === "contact" ? null : "contact")}
             disabled={editSection && editSection !== "contact"}
-            className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
+            className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
           >
             {editSection === "contact" ? "Cancel" : "Edit"}
           </button>
@@ -497,7 +502,7 @@ export default function HostProfile() {
                 name="phone"
                 value={formData.phone ?? ""}
                 onChange={handleChange}
-                className="w-full mt-1 p-2 border rounded-lg"
+                className="cursor-pointer w-full mt-1 p-2 border rounded-lg"
               />
             ) : (
               <div className="flex items-center gap-2 flex-wrap">
@@ -515,7 +520,7 @@ export default function HostProfile() {
         {editSection === "contact" && (
           <button
             onClick={handleSave}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Save Changes
           </button>
@@ -534,7 +539,7 @@ export default function HostProfile() {
                 setEditSection(editSection === "password" ? null : "password")
               }
               disabled={editSection && editSection !== "password"}
-              className="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
+              className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
             >
               {editSection === "password" ? "Cancel" : "Edit"}
             </button>
@@ -576,7 +581,7 @@ export default function HostProfile() {
               </div>
               <button
                 onClick={handleChangePassword}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 Save New Password
               </button>

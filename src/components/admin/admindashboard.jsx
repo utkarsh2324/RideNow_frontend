@@ -92,7 +92,7 @@ export default function AdminDashboard() {
               setActiveTab(tab);
               setDetails(null);
             }}
-            className={`px-5 py-2 rounded-lg font-semibold ${
+            className={`cursor-pointer px-5 py-2 rounded-lg font-semibold ${
               activeTab === tab
                 ? "bg-blue-900 text-white"
                 : "bg-gray-200 hover:bg-gray-300"
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
           </thead>
           <tbody>
             {list.map((i) => (
-              <tr key={i._id} className="border-t text-center">
+              <tr key={i._id} className="cursor-pointer border-t text-center">
                 <td className="p-3">{i.name || i.scootyModel}</td>
                 <td>{i.email || i.host?.email}</td>
                 <td>
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
                 <td>
                   <button
                     onClick={() => fetchDetails(i._id)}
-                    className="text-blue-700 font-semibold"
+                    className="cursor-pointer text-blue-700 font-semibold"
                   >
                     View
                   </button>
@@ -161,7 +161,7 @@ function DetailsModal({ tab, data, onClose, onUserDoc, onHostDoc }) {
       <div className="bg-white w-[92%] max-h-[92%] overflow-y-auto rounded-xl p-6">
         <div className="flex justify-between mb-4">
           <h2 className="text-xl font-bold">Details</h2>
-          <button onClick={onClose} className="text-red-600">✕</button>
+          <button onClick={onClose} className="cursor-pointer text-red-600">✕</button>
         </div>
 
         {/* ========== USERS ========== */}
@@ -185,7 +185,7 @@ function DetailsModal({ tab, data, onClose, onUserDoc, onHostDoc }) {
                   <span>{d.docType}</span>
 
                   {d.docUrl ? (
-                    <a href={d.docUrl} target="_blank" className="text-blue-600">
+                    <a href={d.docUrl} target="_blank" className="cursor-pointer text-blue-600">
                       View
                     </a>
                   ) : (
@@ -201,13 +201,13 @@ function DetailsModal({ tab, data, onClose, onUserDoc, onHostDoc }) {
                   <div className="flex gap-2">
                     <button
                       onClick={() => onUserDoc(data.user._id, i, "approved")}
-                      className="bg-green-600 text-white px-3 py-1 rounded"
+                      className="cursor-pointer bg-green-600 text-white px-3 py-1 rounded"
                     >
                       Approve
                     </button>
                     <button
                       onClick={() => onUserDoc(data.user._id, i, "rejected")}
-                      className="bg-red-600 text-white px-3 py-1 rounded"
+                      className="cursor-pointer bg-red-600 text-white px-3 py-1 rounded"
                     >
                       Reject
                     </button>
@@ -239,7 +239,7 @@ function DetailsModal({ tab, data, onClose, onUserDoc, onHostDoc }) {
                   <a
                     href={data.documents.docUrl}
                     target="_blank"
-                    className="text-blue-600"
+                    className="cursor-pointer text-blue-600"
                   >
                     View
                   </a>
@@ -250,13 +250,13 @@ function DetailsModal({ tab, data, onClose, onUserDoc, onHostDoc }) {
                   <div className="flex gap-2">
                     <button
                       onClick={() => onHostDoc(data.host._id, "approved")}
-                      className="bg-green-600 text-white px-3 py-1 rounded"
+                      className="cursor-pointer bg-green-600 text-white px-3 py-1 rounded"
                     >
                       Approve
                     </button>
                     <button
                       onClick={() => onHostDoc(data.host._id, "rejected")}
-                      className="bg-red-600 text-white px-3 py-1 rounded"
+                      className="cursor-pointer bg-red-600 text-white px-3 py-1 rounded"
                     >
                       Reject
                     </button>
@@ -287,7 +287,7 @@ function DetailsModal({ tab, data, onClose, onUserDoc, onHostDoc }) {
             </div>
 
             {data.rc ? (
-              <a href={data.rc} target="_blank" className="text-blue-600">
+              <a href={data.rc} target="_blank" className="cursor-pointer text-blue-600">
                 View RC
               </a>
             ) : (
