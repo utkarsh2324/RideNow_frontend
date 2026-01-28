@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { Toaster } from "react-hot-toast";
 
 import { AdminAuthContext } from "./components/admin/adminauth.jsx";
-import AdminNavbar from "./components/admin/AdminNavbar";
+import AdminNavbar from "./components/admin/adminnavbar.jsx";
 import AdminLogin from "./components/admin/adminlogin";
 import AdminDashboard from "./components/admin/admindashboard.jsx";
 
