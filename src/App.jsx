@@ -10,17 +10,18 @@ import SearchResults from "./components/searchresult";
 import { Toaster } from "react-hot-toast";
 import VehicleDetails from "./components/vehicledetails";
 import MyBookings from "./components/mybookings";
+import AdminApp from "./AdminApp";
 
 import "./App.css";
 
 function App() {
   const location = useLocation();
   const isHostRoute = location.pathname.startsWith("/host");
-
+  const isAdminRoute = location.pathname.startsWith("/admin");
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
-      {!isHostRoute && <Navbar />}
+      {!isHostRoute && !isAdminRoute && <Navbar />}
 
       <Routes>
         <Route path="/" element={<HeroSection />} />
@@ -34,6 +35,8 @@ function App() {
         
 
         <Route path="/host/*" element={<HostApp />} />
+      
+<Route path="/admin/*" element={<AdminApp />} />
         
       </Routes>
     </>
