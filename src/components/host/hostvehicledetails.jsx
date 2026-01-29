@@ -37,7 +37,7 @@ export default function VehicleDetail() {
   const fetchVehicleDetails = async () => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}vehicles/details/${vehicleId}`,
+        `${import.meta.env.VITE_BACKEND_URL}vehicles/hosted`,
         { credentials: "include" }
       );
 
