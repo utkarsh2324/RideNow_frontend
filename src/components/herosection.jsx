@@ -75,23 +75,52 @@ export default function HeroSection() {
 
   /* ---------------- SEARCH ---------------- */
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!location.trim()) {
       toast.error("Please enter a valid location.");
       return;
     }
-
+  
     if (!fromDate || !toDate || !fromTime || !toTime) {
       toast.error("Please select date and time.");
       return;
     }
-
-    console.log("SENDING LAT LNG 👉", lat, lng);
-
+  
+    let latitude = lat;
+    let longitude = lng;
+  
+    // ✅ If user typed location and no GPS coords → geocode it
+    if (!latitude || !longitude) {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            location
+          )}&format=json&limit=1`
+        );
+  
+        const data = await res.json();
+  
+        if (!data.length) {
+          toast.error("Location not found");
+          return;
+        }
+  
+        latitude = Number(data[0].lat);
+        longitude = Number(data[0].lon);
+  
+        setLat(latitude);
+        setLng(longitude);
+      } catch {
+        toast.error("Failed to locate entered place");
+        return;
+      }
+    }
+  
+    // ✅ ALWAYS GEO SEARCH
     navigate(
       `/search?location=${encodeURIComponent(location)}` +
-        `&lat=${lat}` +
-        `&lng=${lng}` +
+        `&lat=${latitude}` +
+        `&lng=${longitude}` +
         `&fromDate=${fromDate}` +
         `&toDate=${toDate}` +
         `&fromTime=${fromTime}` +
