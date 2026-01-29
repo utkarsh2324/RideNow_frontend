@@ -37,7 +37,8 @@ export default function SearchResults() {
       if (lat && lng) {
         url += `&lat=${lat}&lng=${lng}`;
       }
-
+      console.log("LAT LNG 👉", lat, lng);
+      console.log("SEARCH URL 👉", url);
       const res = await fetch(url, { credentials: "include" });
       const data = await res.json();
 
@@ -152,11 +153,11 @@ export default function SearchResults() {
                   </p>
 
                   {/* 📏 Distance badge */}
-                  {v.distanceInMeters !== undefined && (
-                    <div className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 mb-2">
-                      📍 {(v.distanceInMeters / 1000).toFixed(1)} km from you
-                    </div>
-                  )}
+                  {typeof v.distanceInMeters === "number" && (
+  <div className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 mb-2">
+    📍 {(v.distanceInMeters / 1000).toFixed(1)} km from you
+  </div>
+)}
 
                   <p className="text-gray-600 text-sm mb-3">
                     👤 Host: {v.host?.name || "Anonymous"}
