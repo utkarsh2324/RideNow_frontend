@@ -157,37 +157,43 @@ export default function HeroSection() {
         <div className="max-w-2xl mx-auto bg-white/20 backdrop-blur-lg rounded-2xl p-6 space-y-4 shadow-lg">
 
           {/* Location */}
-          <div className="text-left">
-            <label className="block text-sm font-medium text-white mb-1">
-              Location
-            </label>
+          {/* Location */}
+<div className="text-left">
+  <label className="block text-sm font-medium text-white mb-1">
+    Location
+  </label>
 
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Enter Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
-              />
+  <div className="flex gap-2">
+    <input
+      type="text"
+      placeholder="Enter Location"
+      value={location}
+      onChange={(e) => setLocation(e.target.value)}
+      className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
+    />
 
-              <button
-                type="button"
-                onClick={handleUseGPS}
-                disabled={locating}
-                className="px-3 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition"
-                title="Use current location"
-              >
-                <Navigation size={18} />
-              </button>
-            </div>
+    <button
+      type="button"
+      onClick={handleUseGPS}
+      disabled={locating}
+      className="px-3 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition"
+      title="Use current location"
+    >
+      <Navigation size={18} />
+    </button>
+  </div>
 
-            {lat && lng && (
-              <p className="text-green-200 text-sm mt-1">
-                📍 Using your current location
-              </p>
-            )}
-          </div>
+  {/* ✅ GPS status */}
+  {lat && lng ? (
+    <p className="text-green-200 text-sm mt-1">
+      📍 Using your current location
+    </p>
+  ) : (
+    <p className="text-yellow-200 text-sm mt-1">
+      💡 Tip: Choose GPS for better nearby results
+    </p>
+  )}
+</div>
 
           {/* Dates */}
           <div className="grid grid-cols-2 gap-4">
