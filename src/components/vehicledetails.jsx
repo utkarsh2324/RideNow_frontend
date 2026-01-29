@@ -8,7 +8,6 @@ export default function VehicleDetails() {
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(search);
 
-  const city = queryParams.get("city");
   const fromDate = queryParams.get("fromDate");
   const toDate = queryParams.get("toDate");
   const fromTime = queryParams.get("fromTime") || "10:00";
@@ -43,7 +42,7 @@ export default function VehicleDetails() {
     }
   };
 
-  /* ---------------- PRICE PREVIEW (BACKEND) ---------------- */
+  /* ---------------- PRICE PREVIEW ---------------- */
 
   const fetchPricePreview = async () => {
     try {
@@ -94,10 +93,10 @@ export default function VehicleDetails() {
       toast.error("Price not available.");
       return;
     }
-  
+
     try {
       setBooking(true);
-  
+
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}vehicles/book/${id}`,
         {
@@ -112,9 +111,9 @@ export default function VehicleDetails() {
           }),
         }
       );
-  
+
       const data = await res.json();
-  
+
       if (res.ok) {
         toast.success(
           data.message || "Booking request sent to host successfully"
@@ -173,8 +172,12 @@ export default function VehicleDetails() {
               {vehicle.scootyModel}
             </h2>
 
+            {/* ✅ UPDATED LOCATION DISPLAY */}
             <p className="text-gray-600 mt-1">
-              📍 {vehicle.location}
+              📍 {vehicle.pickupLocation?.address}
+            </p>
+            <p className="text-sm text-gray-500">
+              🏙️ {vehicle.pickupLocation?.city}
             </p>
 
             {/* DATE & TIME */}
@@ -257,7 +260,7 @@ export default function VehicleDetails() {
             <button
               onClick={handleBooking}
               disabled={booking}
-              className={` cursor-pointer w-full mt-6 py-4 rounded-2xl text-white font-semibold text-lg transition ${
+              className={`w-full mt-6 py-4 rounded-2xl text-white font-semibold text-lg transition ${
                 booking
                   ? "bg-gray-400"
                   : "bg-gradient-to-r from-blue-900 to-blue-700 hover:opacity-90"
