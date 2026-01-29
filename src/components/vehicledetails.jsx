@@ -177,6 +177,16 @@ export default function VehicleDetails() {
   📍 {vehicle.pickupLocation?.address}
 </p>
 
+{vehicle.pickupLocation?.landmark?.trim() !== "" && (
+  <p className="text-sm text-gray-500">
+    🧭 Near {vehicle.pickupLocation.landmark}
+  </p>
+)}
+
+<p className="text-sm text-gray-500">
+  🏙️ {vehicle.pickupLocation?.city}
+</p>
+
 {vehicle.pickupLocation?.landmark && (
   <p className="text-sm text-gray-500">
     🧭 Near {vehicle.pickupLocation.landmark}
