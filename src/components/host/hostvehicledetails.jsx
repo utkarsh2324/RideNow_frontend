@@ -315,7 +315,27 @@ export default function VehicleDetail() {
           <p><strong>Email:</strong> {vehicle.host?.email}</p>
           <p><strong>Phone:</strong> {vehicle.host?.phone}</p>
         </div>
+          {/* RC DOCUMENT */}
+<div className="mt-6 border-t pt-4">
+  <h3 className="text-xl font-bold text-blue-900 mb-2">
+    📄 Vehicle Documents
+  </h3>
 
+  {vehicle.rcDocument ? (
+    <a
+      href={vehicle.rcDocument}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-900 rounded-lg hover:bg-blue-200 transition"
+    >
+      📄 View RC
+    </a>
+  ) : (
+    <p className="text-gray-500 text-sm">
+      RC document not available
+    </p>
+  )}
+</div>
       </div>
     </div>
   );
