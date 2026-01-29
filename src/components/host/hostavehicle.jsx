@@ -12,8 +12,11 @@ import toast from "react-hot-toast";
 export default function HostVehicle() {
   const [formData, setFormData] = useState({
     scootyModel: "",
-    location: "",
+    address: "",
+    landmark: "",
     city: "",
+    lat: "",
+    lng: "",
     weekdayPrice: "",
     weekendPrice: "",
     photos: [],
@@ -27,9 +30,10 @@ export default function HostVehicle() {
   /* ---------------- INPUT HANDLERS ---------------- */
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
@@ -49,7 +53,7 @@ export default function HostVehicle() {
     }
   };
 
-  /* ---------------- LOCATION ---------------- */
+  /* ---------------- GPS LOCATION ---------------- */
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -71,7 +75,7 @@ export default function HostVehicle() {
 
           setFormData((prev) => ({
             ...prev,
-            location:
+            address:
               data?.display_name ||
               `${latitude.toFixed(3)}, ${longitude.toFixed(3)}`,
             city:
@@ -79,6 +83,8 @@ export default function HostVehicle() {
               data?.address?.town ||
               data?.address?.village ||
               "",
+            lat: latitude,
+            lng: longitude,
           }));
 
           toast.success("Location detected");
@@ -95,14 +101,10 @@ export default function HostVehicle() {
     );
   };
 
-  /* ---------------- HOST VEHICLE ---------------- */
+  /* ---------------- SUBMIT ---------------- */
 
   const handleHostVehicle = async () => {
-    if (
-      !formData.scootyModel ||
-      !formData.location ||
-      !formData.city
-    ) {
+    if (!formData.scootyModel || !formData.address || !formData.city) {
       toast.error("Please fill all required details");
       return;
     }
@@ -130,8 +132,15 @@ export default function HostVehicle() {
 
       const vehicleForm = new FormData();
       vehicleForm.append("scootyModel", formData.scootyModel);
-      vehicleForm.append("location", formData.location);
+      vehicleForm.append("address", formData.address);
+      vehicleForm.append("landmark", formData.landmark);
       vehicleForm.append("city", formData.city);
+
+      if (formData.lat && formData.lng) {
+        vehicleForm.append("lat", formData.lat);
+        vehicleForm.append("lng", formData.lng);
+      }
+
       vehicleForm.append("weekdayPrice", formData.weekdayPrice);
       vehicleForm.append("weekendPrice", formData.weekendPrice);
       vehicleForm.append("rc", formData.rc);
@@ -160,8 +169,11 @@ export default function HostVehicle() {
 
       setFormData({
         scootyModel: "",
-        location: "",
+        address: "",
+        landmark: "",
         city: "",
+        lat: "",
+        lng: "",
         weekdayPrice: "",
         weekendPrice: "",
         photos: [],
@@ -202,19 +214,19 @@ export default function HostVehicle() {
             />
           </div>
 
-          {/* Location */}
+          {/* Address */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">
-              Location
+              Pickup Address
             </label>
             <div className="flex gap-2 items-center">
               <MapPin className="text-blue-900" />
               <input
                 type="text"
-                name="location"
-                value={formData.location}
+                name="address"
+                value={formData.address}
                 onChange={handleChange}
-                placeholder="Area / Street"
+                placeholder="Street / Area"
                 className="w-full p-2 border rounded-lg"
               />
               <button
@@ -229,6 +241,21 @@ export default function HostVehicle() {
             </div>
           </div>
 
+          {/* Landmark */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">
+              Landmark (optional)
+            </label>
+            <input
+              type="text"
+              name="landmark"
+              value={formData.landmark}
+              onChange={handleChange}
+              placeholder="Near metro / mall"
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+
           {/* City */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">
@@ -239,56 +266,47 @@ export default function HostVehicle() {
               name="city"
               value={formData.city}
               onChange={handleChange}
-              placeholder="Vijayawada / Guntur"
+              placeholder="Bangalore / Vijayawada"
               className="w-full p-2 border rounded-lg"
             />
           </div>
 
           {/* Pricing */}
-         
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div>
-    <label className="block font-medium text-gray-700 mb-1">
-      Weekday Price (₹ / day)
-    </label>
-    <div className="flex items-center gap-2">
-      <IndianRupee className="w-4 h-4 text-gray-500" />
-      <input
-        type="number"
-        name="weekdayPrice"
-        value={formData.weekdayPrice}
-        onChange={handleChange}
-        placeholder="e.g. 350"
-        min="1"
-        className="w-full p-2 border rounded-lg"
-      />
-    </div>
-    <p className="text-xs text-gray-500 mt-1">
-      Recommended range: ₹300–₹400 per day. Vehicles priced in this range tend to receive higher weekday bookings.
-    </p>
-  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">
+                Weekday Price (₹ / day)
+              </label>
+              <div className="flex items-center gap-2">
+                <IndianRupee className="w-4 h-4 text-gray-500" />
+                <input
+                  type="number"
+                  name="weekdayPrice"
+                  value={formData.weekdayPrice}
+                  onChange={handleChange}
+                  min="1"
+                  className="w-full p-2 border rounded-lg"
+                />
+              </div>
+            </div>
 
-  <div>
-    <label className="block font-medium text-gray-700 mb-1">
-      Weekend Price (₹ / day)
-    </label>
-    <div className="flex items-center gap-2">
-      <IndianRupee className="w-4 h-4 text-gray-500" />
-      <input
-        type="number"
-        name="weekendPrice"
-        value={formData.weekendPrice}
-        onChange={handleChange}
-        placeholder="e.g. 550"
-        min="1"
-        className="w-full p-2 border rounded-lg"
-      />
-    </div>
-    <p className="text-xs text-gray-500 mt-1">
-      Recommended range: ₹500–₹600 per day. Weekend demand is typically higher, allowing for better pricing.
-    </p>
-  </div>
-</div>
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">
+                Weekend Price (₹ / day)
+              </label>
+              <div className="flex items-center gap-2">
+                <IndianRupee className="w-4 h-4 text-gray-500" />
+                <input
+                  type="number"
+                  name="weekendPrice"
+                  value={formData.weekendPrice}
+                  onChange={handleChange}
+                  min="1"
+                  className="w-full p-2 border rounded-lg"
+                />
+              </div>
+            </div>
+          </div>
 
           {/* Photos */}
           <div>
@@ -303,12 +321,9 @@ export default function HostVehicle() {
               onChange={handleFileChange}
               className="w-full border p-2 rounded-lg"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Upload 2–5 clear photos
-            </p>
           </div>
 
-          {/* RC Upload */}
+          {/* RC */}
           <div>
             <label className="block font-medium text-gray-700 mb-1 flex items-center gap-2">
               <FileText className="text-blue-900" />
@@ -321,11 +336,6 @@ export default function HostVehicle() {
               onChange={handleFileChange}
               className="w-full border p-2 rounded-lg"
             />
-            {formData.rc && (
-              <p className="text-yellow-700 text-sm mt-2">
-                ⏳ RC uploaded. Verification pending.
-              </p>
-            )}
           </div>
 
           {/* Submit */}
