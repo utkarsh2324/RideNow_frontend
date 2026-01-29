@@ -123,7 +123,7 @@ export default function VehicleDetail() {
       toast.error("Weekend price cannot be less than weekday price");
       return;
     }
-
+  
     try {
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}vehicles/update/${vehicleId}`,
@@ -146,16 +146,18 @@ export default function VehicleDetail() {
           }),
         }
       );
-
+  
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.message || "Failed to update vehicle");
         return;
       }
-
+  
       toast.success("Vehicle updated successfully");
-      setVehicle(data.data);
       setEditing(false);
+  
+      // 🔥 REFRESH DATA FROM DETAILS API
+      fetchVehicleDetails();
     } catch {
       toast.error("Update failed");
     }
