@@ -26,6 +26,8 @@ export default function VehicleDetail() {
     address: "",
     landmark: "",
     city: "",
+    lat: null,
+    lng: null,
     weekdayPrice: "",
     weekendPrice: "",
   });
@@ -46,11 +48,14 @@ export default function VehicleDetail() {
       }
 
       const v = data.data;
+
       setVehicle(v);
       setUpdateData({
         address: v.pickupLocation?.address || "",
         landmark: v.pickupLocation?.landmark || "",
         city: v.pickupLocation?.city || "",
+        lat: v.pickupLocation?.coordinates?.coordinates?.[1] ?? null,
+        lng: v.pickupLocation?.coordinates?.coordinates?.[0] ?? null,
         weekdayPrice: v.pricing?.weekdayPrice || "",
         weekendPrice: v.pricing?.weekendPrice || "",
       });
@@ -93,9 +98,11 @@ export default function VehicleDetail() {
               data?.address?.town ||
               data?.address?.village ||
               prev.city,
+            lat: coords.latitude,
+            lng: coords.longitude,
           }));
 
-          toast.success("Location auto-filled using GPS");
+          toast.success("Location updated using GPS");
         } catch {
           toast.error("Failed to fetch address");
         } finally {
@@ -103,7 +110,7 @@ export default function VehicleDetail() {
         }
       },
       () => {
-        toast.error("Location access denied");
+        toast.error("Please allow location access for better search");
         setLocating(false);
       }
     );
@@ -130,6 +137,8 @@ export default function VehicleDetail() {
               landmark: updateData.landmark,
               city: updateData.city,
             },
+            lat: updateData.lat,
+            lng: updateData.lng,
             pricing: {
               weekdayPrice: Number(updateData.weekdayPrice),
               weekendPrice: Number(updateData.weekendPrice),
@@ -223,18 +232,6 @@ export default function VehicleDetail() {
           </div>
         </div>
 
-        {/* Photos */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-          {vehicle.photos?.map((p, i) => (
-            <img
-              key={i}
-              src={p}
-              alt="vehicle"
-              className="w-full h-40 object-cover rounded-xl"
-            />
-          ))}
-        </div>
-
         {/* Pickup Location */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -274,18 +271,11 @@ export default function VehicleDetail() {
               )}
             </div>
           ))}
-        </div>
 
-        {/* Availability */}
-        <div className="mt-4">
-          {vehicle.isAvailable ? (
-            <span className="text-green-700 flex items-center gap-2">
-              <ToggleRight /> Available
-            </span>
-          ) : (
-            <span className="text-red-700 flex items-center gap-2">
-              <ToggleLeft /> Unavailable
-            </span>
+          {updateData.lat && updateData.lng && (
+            <p className="text-green-600 text-sm">
+              📍 GPS coordinates updated
+            </p>
           )}
         </div>
 
