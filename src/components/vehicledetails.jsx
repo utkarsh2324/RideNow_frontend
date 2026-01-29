@@ -187,18 +187,7 @@ export default function VehicleDetails() {
   🏙️ {vehicle.pickupLocation?.city}
 </p>
 
-{vehicle.pickupLocation?.landmark && (
-  <p className="text-sm text-gray-500">
-    🧭 Near {vehicle.pickupLocation.landmark}
-  </p>
-)}
 
-<p className="text-sm text-gray-500">
-  🏙️ {vehicle.pickupLocation?.city}
-</p>
-            <p className="text-sm text-gray-500">
-              🏙️ {vehicle.pickupLocation?.city}
-            </p>
 
             {/* DATE & TIME */}
             <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-700">
