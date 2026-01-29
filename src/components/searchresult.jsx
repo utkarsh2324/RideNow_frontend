@@ -1,4 +1,3 @@
-// src/components/searchresult.jsx
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -8,8 +7,10 @@ export default function SearchResults() {
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(search);
 
-  // ✅ Extract all query params
+  // 🔍 Query params
   const locationParam = queryParams.get("location");
+  const lat = queryParams.get("lat");
+  const lng = queryParams.get("lng");
   const fromDate = queryParams.get("fromDate");
   const toDate = queryParams.get("toDate");
   const fromTime = queryParams.get("fromTime");
@@ -18,27 +19,41 @@ export default function SearchResults() {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch vehicles from backend
+  /* ---------------- FETCH VEHICLES ---------------- */
+
   const fetchVehicles = async () => {
     try {
       setLoading(true);
-      const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}vehicles/search?` +
-          `location=${encodeURIComponent(locationParam)}` +
-          `&fromDate=${fromDate}` +
-          `&toDate=${toDate}` +
-          `&fromTime=${fromTime}` +
-          `&toTime=${toTime}`,
-        { credentials: "include" }
-      );
 
+      let url =
+        `${import.meta.env.VITE_BACKEND_URL}vehicles/search?` +
+        `fromDate=${fromDate}&toDate=${toDate}` +
+        `&fromTime=${fromTime}&toTime=${toTime}`;
+
+      if (locationParam) {
+        url += `&location=${encodeURIComponent(locationParam)}`;
+      }
+
+      if (lat && lng) {
+        url += `&lat=${lat}&lng=${lng}`;
+      }
+
+      const res = await fetch(url, { credentials: "include" });
       const data = await res.json();
+
       if (!res.ok) {
         toast.error(data.message || "Failed to fetch vehicles.");
         return;
       }
 
-      setVehicles(data.data || []);
+      // 🔥 Optional: sort by nearest first
+      const sorted = (data.data || []).sort(
+        (a, b) =>
+          (a.distanceInMeters ?? Infinity) -
+          (b.distanceInMeters ?? Infinity)
+      );
+
+      setVehicles(sorted);
     } catch (error) {
       console.error("Error fetching vehicles:", error);
       toast.error("Something went wrong while fetching vehicles.");
@@ -48,8 +63,11 @@ export default function SearchResults() {
   };
 
   useEffect(() => {
-    if (locationParam) fetchVehicles();
-  }, [locationParam]);
+    fetchVehicles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* ---------------- LOADING ---------------- */
 
   if (loading) {
     return (
@@ -59,13 +77,18 @@ export default function SearchResults() {
     );
   }
 
+  /* ---------------- UI ---------------- */
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 px-6">
       <div className="max-w-6xl mx-auto">
-        {/* ✅ Search Summary */}
+        {/* 🔎 Search Summary */}
         <div className="bg-white shadow-md rounded-2xl p-5 mb-8 border text-center">
           <h2 className="text-2xl font-bold text-blue-900 mb-3">
-            Scooties available near <span className="text-blue-800">{locationParam}</span>
+            Scooties available near{" "}
+            <span className="text-blue-800">
+              {locationParam || "your location"}
+            </span>
           </h2>
 
           <div className="flex flex-wrap justify-center gap-6 text-gray-700 text-sm">
@@ -79,10 +102,15 @@ export default function SearchResults() {
                 ⏰ <strong>Time:</strong> {fromTime} → {toTime}
               </p>
             )}
+            {lat && lng && (
+              <p className="text-green-700 font-medium">
+                📍 Showing vehicles within 20 km
+              </p>
+            )}
           </div>
         </div>
 
-        {/* ✅ Results */}
+        {/* 🚗 Results */}
         {vehicles.length === 0 ? (
           <div className="text-center mt-20">
             <p className="text-lg text-gray-600 mb-4">
@@ -102,31 +130,48 @@ export default function SearchResults() {
                 key={v._id}
                 className="bg-white shadow-lg rounded-2xl overflow-hidden border hover:shadow-xl transition"
               >
+                {/* 📸 Image */}
                 <img
                   src={v.photos?.[0] || "/placeholder.png"}
                   alt={v.scootyModel}
                   className="w-full h-48 object-cover"
                 />
+
+                {/* 📄 Details */}
                 <div className="p-5">
-                  <h3 className="text-xl font-bold text-blue-900 mb-2">
+                  <h3 className="text-xl font-bold text-blue-900 mb-1">
                     {v.scootyModel}
                   </h3>
-                  <p className="text-gray-700 text-sm mb-2">📍 {v.location}</p>
+
+                  <p className="text-gray-700 text-sm mb-1">
+                    📍 {v.pickupLocation?.address}
+                  </p>
+
+                  <p className="text-gray-600 text-sm mb-1">
+                    🏙️ {v.pickupLocation?.city}
+                  </p>
+
+                  {/* 📏 Distance badge */}
+                  {v.distanceInMeters !== undefined && (
+                    <div className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 mb-2">
+                      📍 {(v.distanceInMeters / 1000).toFixed(1)} km from you
+                    </div>
+                  )}
+
                   <p className="text-gray-600 text-sm mb-3">
                     👤 Host: {v.host?.name || "Anonymous"}
                   </p>
+
                   <button
-  onClick={() =>
-    navigate(
-        `/vehicle/${v._id}?city=${encodeURIComponent(
-          v.city || "Bangalore"
-        )}&fromDate=${fromDate}&toDate=${toDate}&fromTime=${fromTime}&toTime=${toTime}`
-      )
-  }
-  className="cursor-pointer w-full bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium"
->
-  View Details
-</button>
+                    onClick={() =>
+                      navigate(
+                        `/vehicle/${v._id}?fromDate=${fromDate}&toDate=${toDate}&fromTime=${fromTime}&toTime=${toTime}`
+                      )
+                    }
+                    className="w-full bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium"
+                  >
+                    View Details
+                  </button>
                 </div>
               </div>
             ))}

@@ -136,7 +136,13 @@ export default function HostVehicle() {
       vehicleForm.append("landmark", formData.landmark);
       vehicleForm.append("city", formData.city);
 
-      if (formData.lat && formData.lng) {
+      // ✅ SAFE lat/lng check (important fix)
+      if (
+        formData.lat !== null &&
+        formData.lng !== null &&
+        formData.lat !== "" &&
+        formData.lng !== ""
+      ) {
         vehicleForm.append("lat", formData.lat);
         vehicleForm.append("lng", formData.lng);
       }
