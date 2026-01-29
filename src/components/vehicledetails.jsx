@@ -174,8 +174,18 @@ export default function VehicleDetails() {
 
             {/* ✅ UPDATED LOCATION DISPLAY */}
             <p className="text-gray-600 mt-1">
-              📍 {vehicle.pickupLocation?.address}
-            </p>
+  📍 {vehicle.pickupLocation?.address}
+</p>
+
+{vehicle.pickupLocation?.landmark && (
+  <p className="text-sm text-gray-500">
+    🧭 Near {vehicle.pickupLocation.landmark}
+  </p>
+)}
+
+<p className="text-sm text-gray-500">
+  🏙️ {vehicle.pickupLocation?.city}
+</p>
             <p className="text-sm text-gray-500">
               🏙️ {vehicle.pickupLocation?.city}
             </p>
