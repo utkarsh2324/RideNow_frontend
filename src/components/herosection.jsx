@@ -86,14 +86,16 @@ export default function HeroSection() {
       return;
     }
   
-    let latitude = Number(lat);
-    let longitude = Number(lng);
+    let latitude = lat;
+    let longitude = lng;
   
-    const hasValidCoords =
-      Number.isFinite(latitude) && Number.isFinite(longitude);
-  
-    // 🔁 If GPS not used → geocode manual location
-    if (!hasValidCoords) {
+    // ✅ Convert typed location → lat/lng
+    if (
+      latitude === null ||
+      longitude === null ||
+      Number.isNaN(latitude) ||
+      Number.isNaN(longitude)
+    ) {
       try {
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
