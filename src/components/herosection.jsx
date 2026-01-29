@@ -89,8 +89,13 @@ export default function HeroSection() {
     let latitude = lat;
     let longitude = lng;
   
-    // ✅ If user typed location and no GPS coords → geocode it
-    if (!latitude || !longitude) {
+    // ✅ Convert typed location → lat/lng
+    if (
+      latitude === null ||
+      longitude === null ||
+      Number.isNaN(latitude) ||
+      Number.isNaN(longitude)
+    ) {
       try {
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
@@ -116,7 +121,6 @@ export default function HeroSection() {
       }
     }
   
-    // ✅ ALWAYS GEO SEARCH
     navigate(
       `/search?location=${encodeURIComponent(location)}` +
         `&lat=${latitude}` +
