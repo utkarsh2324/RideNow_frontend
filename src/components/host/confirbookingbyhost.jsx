@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-/* ================= TIME FORMATTER (IST SAFE) ================= */
+/* ================= TIME FORMATTER ================= */
 const cleanDateTime = (isoString) => {
   if (!isoString) return "";
-  return isoString
-    .replace("T", " ")
-    .replace(":00.000Z", "");
+  return isoString.replace("T", " ").replace(":00.000Z", "");
 };
 
 export default function HostBookingsconfirmed() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [confirming, setConfirming] = useState(null); // bookingId
+  const [confirming, setConfirming] = useState(null);
+  const [cancelling, setCancelling] = useState(null);
 
   /* ---------------- FETCH HOST BOOKINGS ---------------- */
   const fetchHostBookings = async () => {
@@ -31,7 +30,7 @@ export default function HostBookingsconfirmed() {
         return;
       }
 
-      // ✅ Only show pending bookings
+      // ✅ Only pending bookings
       const pendingOnly = (data.data || []).filter(
         (b) => b.bookingStatus === "pending"
       );
@@ -68,9 +67,7 @@ export default function HostBookingsconfirmed() {
         return;
       }
 
-      toast.success("Booking confirmed successfully ✅");
-
-      // Refresh list
+      toast.success("Booking confirmed ✅");
       fetchHostBookings();
     } catch {
       toast.error("Something went wrong while confirming booking");
@@ -79,7 +76,41 @@ export default function HostBookingsconfirmed() {
     }
   };
 
-  /* ---------------- LOADING STATE ---------------- */
+  /* ---------------- CANCEL BOOKING ---------------- */
+  const cancelBooking = async (vehicleId, bookingId) => {
+    const confirmCancel = window.confirm(
+      "Are you sure you want to cancel this booking?"
+    );
+    if (!confirmCancel) return;
+
+    try {
+      setCancelling(bookingId);
+
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}vehicles/host/vehicles/${vehicleId}/bookings/${bookingId}/cancel`,
+        {
+          method: "PATCH",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || "Failed to cancel booking");
+        return;
+      }
+
+      toast.success("Booking cancelled ❌");
+      fetchHostBookings();
+    } catch {
+      toast.error("Something went wrong while cancelling booking");
+    } finally {
+      setCancelling(null);
+    }
+  };
+
+  /* ---------------- LOADING ---------------- */
   if (loading) {
     return (
       <div className="h-screen flex justify-center items-center font-semibold text-blue-900">
@@ -120,30 +151,27 @@ export default function HostBookingsconfirmed() {
                   />
 
                   <div className="p-5 space-y-3">
-                    {/* Vehicle Info */}
                     <h3 className="text-xl font-semibold text-blue-900">
                       {booking.scootyModel}
                     </h3>
 
-                    {/* ✅ TIME (IST CORRECT) */}
+                    {/* TIME */}
                     <p className="text-sm text-gray-700">
-  🕒 {cleanDateTime(booking.startDate)} →{" "}
-  {cleanDateTime(booking.endDate)}
-</p>
+                      🕒 {cleanDateTime(booking.startDate)} →{" "}
+                      {cleanDateTime(booking.endDate)}
+                    </p>
 
-                    {/* Price */}
                     <p className="text-sm text-gray-700">
                       💰 ₹{booking.totalPrice}
                     </p>
 
-                    {/* Status */}
-                    <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold border bg-yellow-100 text-yellow-700 border-yellow-400">
+                    <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 border border-yellow-400">
                       PENDING
                     </span>
 
                     <hr />
 
-                    {/* Renter Details */}
+                    {/* RENTER */}
                     <div className="flex items-center gap-3">
                       <img
                         src={renter.photo || "/default-avatar.png"}
@@ -163,21 +191,38 @@ export default function HostBookingsconfirmed() {
                       </div>
                     </div>
 
-                    {/* Confirm Button */}
-                    <button
-                      onClick={() =>
-                        confirmBooking(
-                          booking.vehicleId,
-                          booking.bookingId
-                        )
-                      }
-                      disabled={confirming === booking.bookingId}
-                      className="w-full mt-3 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold disabled:opacity-50"
-                    >
-                      {confirming === booking.bookingId
-                        ? "Confirming..."
-                        : "Confirm Booking"}
-                    </button>
+                    {/* ACTION BUTTONS */}
+                    <div className="flex gap-2 mt-3">
+                      <button
+                        onClick={() =>
+                          confirmBooking(
+                            booking.vehicleId,
+                            booking.bookingId
+                          )
+                        }
+                        disabled={confirming === booking.bookingId}
+                        className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold disabled:opacity-50"
+                      >
+                        {confirming === booking.bookingId
+                          ? "Confirming..."
+                          : "Confirm"}
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          cancelBooking(
+                            booking.vehicleId,
+                            booking.bookingId
+                          )
+                        }
+                        disabled={cancelling === booking.bookingId}
+                        className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold disabled:opacity-50"
+                      >
+                        {cancelling === booking.bookingId
+                          ? "Cancelling..."
+                          : "Cancel"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
