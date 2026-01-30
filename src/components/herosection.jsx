@@ -21,34 +21,38 @@ export default function HeroSection() {
   /* ---------------- USE GPS ---------------- */
 
   const handleUseGPS = () => {
+    document.activeElement?.blur(); // close keyboard
+  
     if (!navigator.geolocation) {
       toast.error("Geolocation not supported");
       return;
     }
-
+  
     setLocating(true);
-
+  
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         const latitude = coords.latitude;
         const longitude = coords.longitude;
-    
+  
         setLat(latitude);
         setLng(longitude);
-    
+  
         try {
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            `${import.meta.env.VITE_BACKEND_URL}location/reverse?lat=${latitude}&lng=${longitude}`,
+            { credentials: "include" }
           );
+  
           const data = await res.json();
-    
+  
           const city =
             data.address?.city ||
             data.address?.town ||
             data.address?.village ||
             data.address?.state ||
             "Your location";
-    
+  
           setLocation(city);
           toast.success(`Location set to ${city}`);
         } catch {
@@ -57,17 +61,8 @@ export default function HeroSection() {
           setLocating(false);
         }
       },
-      (error) => {
-        console.warn("GPS error:", error);
-    
-        toast(
-          "📍 Please allow location access for better search results",
-          {
-            icon: "⚠️",
-            duration: 4000,
-          }
-        );
-    
+      () => {
+        toast("📍 Please allow location access", { icon: "⚠️" });
         setLocating(false);
       }
     );
@@ -98,9 +93,8 @@ export default function HeroSection() {
     ) {
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-            location
-          )}&format=json&limit=1`
+          `${import.meta.env.VITE_BACKEND_URL}location/reverse?lat=${latitude}&lng=${longitude}`,
+          { credentials: "include" }
         );
   
         const data = await res.json();
@@ -163,25 +157,28 @@ export default function HeroSection() {
     Location
   </label>
 
-  <div className="flex gap-2">
-    <input
-      type="text"
-      placeholder="Enter Location"
-      value={location}
-      onChange={(e) => setLocation(e.target.value)}
-      className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
-    />
+  <div className="flex gap-2 items-stretch">
+  <input
+    type="text"
+    placeholder="Enter Location"
+    value={location}
+    onChange={(e) => setLocation(e.target.value)}
+    className="flex-1 px-4 py-3 rounded-xl bg-white/90 text-gray-800 text-base"
+  />
 
-    <button
-      type="button"
-      onClick={handleUseGPS}
-      disabled={locating}
-      className="px-3 py-3 bg-blue-900 text-white rounded-xl hover:bg-blue-800 transition"
-      title="Use current location"
-    >
-      <Navigation size={18} />
-    </button>
-  </div>
+  <button
+    type="button"
+    onClick={handleUseGPS}
+    disabled={locating}
+    className="min-w-[48px] min-h-[48px] flex items-center justify-center
+               bg-blue-900 text-white rounded-xl
+               active:scale-95 transition
+               disabled:opacity-60"
+    title="Use current location"
+  >
+    <Navigation size={20} />
+  </button>
+</div>
 
   {/* ✅ GPS status */}
   {lat && lng ? (

@@ -18,8 +18,24 @@ export default function VehicleDetails() {
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
 
-  /* ---------------- FETCH VEHICLE ---------------- */
+  // ✅ CONSENT STATE
+  const [agreed, setAgreed] = useState(false);
 
+  /* ================= CHECK EXISTING CONSENT ================= */
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}users/current-user`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.data?.termsConsent?.accepted) {
+          setAgreed(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  /* ---------------- FETCH VEHICLE ---------------- */
   const fetchVehicleDetails = async () => {
     try {
       const res = await fetch(
@@ -36,14 +52,13 @@ export default function VehicleDetails() {
       }
 
       setVehicle(data.data);
-    } catch (error) {
+    } catch {
       toast.error("Error loading vehicle.");
       navigate("/search");
     }
   };
 
   /* ---------------- PRICE PREVIEW ---------------- */
-
   const fetchPricePreview = async () => {
     try {
       const res = await fetch(
@@ -69,7 +84,7 @@ export default function VehicleDetails() {
       }
 
       setPriceData(data.data);
-    } catch (error) {
+    } catch {
       toast.error("Price preview failed");
     } finally {
       setLoading(false);
@@ -86,9 +101,42 @@ export default function VehicleDetails() {
     }
   }, [vehicle, fromDate, toDate]);
 
-  /* ---------------- BOOK VEHICLE ---------------- */
+  /* ================= ACCEPT TERMS ================= */
+  const handleConsentChange = async (checked) => {
+    setAgreed(checked);
 
+    if (!checked) return;
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}users/accept-terms`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || "Failed to save consent");
+        setAgreed(false);
+      } else {
+        toast.success("Terms & Conditions accepted");
+      }
+    } catch {
+      toast.error("Failed to save consent");
+      setAgreed(false);
+    }
+  };
+
+  /* ---------------- BOOK VEHICLE ---------------- */
   const handleBooking = async () => {
+    if (!agreed) {
+      toast.error("Please agree to Terms & Conditions before booking.");
+      return;
+    }
+
     if (!priceData) {
       toast.error("Price not available.");
       return;
@@ -113,16 +161,15 @@ export default function VehicleDetails() {
       );
 
       const data = await res.json();
-
       if (res.ok) {
-        toast.success(
-          data.message || "Booking request sent to host successfully"
-        );
+        toast.success(data.message);
         navigate("/rides");
       } else {
-        toast.error(data.message || "Booking failed.");
+        toast.error(data.message, {
+          duration: 5000, // keep it visible
+        });
       }
-    } catch (error) {
+    } catch {
       toast.error("Booking error.");
     } finally {
       setBooking(false);
@@ -130,7 +177,6 @@ export default function VehicleDetails() {
   };
 
   /* ---------------- UI ---------------- */
-
   if (loading) {
     return (
       <div className="h-screen flex justify-center items-center">
@@ -152,7 +198,7 @@ export default function VehicleDetails() {
       <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-3xl overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-          {/* ================= LEFT : PHOTOS ================= */}
+          {/* LEFT : PHOTOS */}
           <div className="p-4 lg:p-6 lg:sticky lg:top-24 h-fit">
             <div className="grid grid-cols-2 gap-3">
               {vehicle.photos?.map((photo, i) => (
@@ -166,28 +212,25 @@ export default function VehicleDetails() {
             </div>
           </div>
 
-          {/* ================= RIGHT : DETAILS ================= */}
+          {/* RIGHT : DETAILS */}
           <div className="p-5 sm:p-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-blue-900">
               {vehicle.scootyModel}
             </h2>
 
-            {/* ✅ UPDATED LOCATION DISPLAY */}
             <p className="text-gray-600 mt-1">
-  📍 {vehicle.pickupLocation?.address}
-</p>
+              📍 {vehicle.pickupLocation?.address}
+            </p>
 
-{vehicle.pickupLocation?.landmark?.trim() !== "" && (
-  <p className="text-sm text-gray-500">
-    🧭 Near {vehicle.pickupLocation.landmark}
-  </p>
-)}
+            {vehicle.pickupLocation?.landmark?.trim() !== "" && (
+              <p className="text-sm text-gray-500">
+                🧭 Near {vehicle.pickupLocation.landmark}
+              </p>
+            )}
 
-<p className="text-sm text-gray-500">
-  🏙️ {vehicle.pickupLocation?.city}
-</p>
-
-
+            <p className="text-sm text-gray-500">
+              🏙️ {vehicle.pickupLocation?.city}
+            </p>
 
             {/* DATE & TIME */}
             <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-700">
@@ -195,7 +238,7 @@ export default function VehicleDetails() {
               <p>⏰ {fromTime} → {toTime}</p>
             </div>
 
-            {/* HOST CARD */}
+            {/* HOST CARD (UNCHANGED) */}
             {vehicle.host && (
               <div className="mt-6 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center gap-4">
                 <img
@@ -203,54 +246,19 @@ export default function VehicleDetails() {
                   alt="Host"
                   className="w-14 h-14 rounded-full object-cover border"
                 />
-
                 <div className="flex-1">
                   <p className="font-semibold text-gray-800">
                     {vehicle.host.name || "Unknown Host"}
                   </p>
-                  <p className="text-sm text-gray-600">
-                    {vehicle.host.email}
-                  </p>
-                  {vehicle.host.phone && (
-                    <p className="text-sm text-gray-600">
-                      📞 {vehicle.host.phone}
-                    </p>
-                  )}
+                  
                 </div>
-
                 <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
                   Host
                 </span>
               </div>
             )}
 
-            {/* VERIFIED STATUS */}
-            <div className="mt-6 bg-gray-50 border rounded-2xl p-4 text-sm">
-              {vehicle.isVerified ? (
-                <span className="text-green-700 bg-green-100 px-3 py-1 rounded-full text-xs">
-                  ✅ Verified Vehicle
-                </span>
-              ) : (
-                <span className="text-yellow-700 bg-yellow-100 px-3 py-1 rounded-full text-xs">
-                  ⏳ Verification Pending
-                </span>
-              )}
-            </div>
-
-            {/* PAYMENT INFO */}
-            <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 text-sm text-gray-700">
-              <p className="font-semibold text-gray-800 mb-1">
-                💳 Payment Information
-              </p>
-              <p>
-                Payment will be collected directly by the host at pickup.
-              </p>
-              <p className="mt-1 text-gray-600">
-                Cash or direct payment is currently supported.
-              </p>
-            </div>
-
-            {/* PRICE CARD */}
+            {/* PRICE */}
             {priceData && (
               <div className="mt-6 bg-blue-900 text-white rounded-2xl p-5">
                 <p className="text-sm opacity-80">
@@ -265,13 +273,35 @@ export default function VehicleDetails() {
               </div>
             )}
 
+            {/* ✅ CONSENT SECTION (ADDED) */}
+            <div className="mt-6 bg-gray-50 border rounded-xl p-4 text-sm">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={(e) => handleConsentChange(e.target.checked)}
+                  className="mt-1 w-4 h-4"
+                />
+                <span>
+                  I agree to the{" "}
+                  <span
+                    onClick={() => navigate("/terms")}
+                    className="text-blue-900 underline font-medium cursor-pointer"
+                  >
+                    Terms & Conditions. <br/>
+                  </span>
+                  Please read it carefully before accepting the terms and condition.
+                </span>
+              </label>
+            </div>
+
             {/* BOOK BUTTON */}
             <button
               onClick={handleBooking}
-              disabled={booking}
-              className={`w-full mt-6 py-4 rounded-2xl text-white font-semibold text-lg transition ${
-                booking
-                  ? "bg-gray-400"
+              disabled={booking || !agreed}
+              className={`cursor-pointer w-full mt-6 py-4 rounded-2xl text-white font-semibold text-lg transition ${
+                booking || !agreed
+                  ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-blue-900 to-blue-700 hover:opacity-90"
               }`}
             >

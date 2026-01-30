@@ -114,10 +114,7 @@ export default function HostVehicle() {
       return;
     }
 
-    if (
-      Number(formData.weekendPrice) <
-      Number(formData.weekdayPrice)
-    ) {
+    if (Number(formData.weekendPrice) < Number(formData.weekdayPrice)) {
       toast.error("Weekend price cannot be less than weekday price");
       return;
     }
@@ -136,7 +133,6 @@ export default function HostVehicle() {
       vehicleForm.append("landmark", formData.landmark);
       vehicleForm.append("city", formData.city);
 
-      // ✅ SAFE lat/lng check (important fix)
       if (
         formData.lat !== null &&
         formData.lng !== null &&
@@ -187,7 +183,7 @@ export default function HostVehicle() {
       });
 
       navigate("/host/hostavehicle");
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setUploading(false);
@@ -205,6 +201,7 @@ export default function HostVehicle() {
         </h2>
 
         <div className="space-y-5">
+
           {/* Scooty Model */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">
@@ -220,13 +217,15 @@ export default function HostVehicle() {
             />
           </div>
 
-          {/* Address */}
+          {/* Pickup Address */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">
               Pickup Address
             </label>
+
             <div className="flex gap-2 items-center">
-              <MapPin className="text-blue-900" />
+              <MapPin className="text-blue-900 shrink-0" />
+
               <input
                 type="text"
                 name="address"
@@ -235,16 +234,32 @@ export default function HostVehicle() {
                 placeholder="Street / Area"
                 className="w-full p-2 border rounded-lg"
               />
+
               <button
                 type="button"
                 onClick={handleUseCurrentLocation}
                 disabled={locating}
-                className="px-3 py-2 bg-blue-900 text-white rounded-lg text-sm"
+                className="px-3 py-2 bg-blue-900 text-white rounded-lg text-sm whitespace-nowrap"
               >
                 <Navigation className="w-4 h-4 inline" />{" "}
                 {locating ? "Locating..." : "Use GPS"}
               </button>
             </div>
+
+            {/* ✅ GPS SUGGESTION */}
+            {formData.lat && formData.lng ? (
+  <div className="mt-2 flex items-center gap-2 text-sm text-green-700">
+    <span>📍</span>
+    <span>Using your current location</span>
+  </div>
+) : (
+  <div className="mt-2 flex items-center gap-2 text-sm text-blue-700 bg-blue-50 px-3 py-2 rounded-lg">
+    <span>💡</span>
+    <span>
+      Please use GPS for accurate pickup location and better search results
+    </span>
+  </div>
+)}
           </div>
 
           {/* Landmark */}

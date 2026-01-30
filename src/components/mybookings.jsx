@@ -5,13 +5,15 @@ export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch bookings of the logged-in user
+  /* ---------------- FETCH BOOKINGS ---------------- */
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}vehicles/mybookings`, {
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}vehicles/mybookings`,
+        { credentials: "include" }
+      );
+
       const data = await res.json();
 
       if (res.ok) {
@@ -31,7 +33,7 @@ export default function MyBookings() {
     fetchBookings();
   }, []);
 
-  // ✅ Handle manual booking end
+  /* ---------------- END BOOKING ---------------- */
   const handleEndBooking = async (vehicleId) => {
     try {
       const res = await fetch(
@@ -41,11 +43,12 @@ export default function MyBookings() {
           credentials: "include",
         }
       );
+
       const data = await res.json();
 
       if (res.ok) {
         toast.success(data.message || "Booking ended successfully!");
-        fetchBookings(); // refresh list
+        fetchBookings();
       } else {
         toast.error(data.message || "Failed to end booking.");
       }
@@ -55,6 +58,7 @@ export default function MyBookings() {
     }
   };
 
+  /* ---------------- UI STATES ---------------- */
   if (loading)
     return (
       <div className="h-screen flex justify-center items-center text-blue-900 font-semibold">
@@ -77,76 +81,123 @@ export default function MyBookings() {
         </h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {bookings.map((b, index) => (
-            <div
-              key={index}
-              className="bg-white border shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition-all"
-            >
-              <img
-                src={b.photos?.[0] || "/placeholder.png"}
-                alt={b.scootyModel}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-5">
-                <h3 className="text-xl font-bold text-blue-900 mb-2">
-                  {b.scootyModel}
-                </h3>
-                <p className="text-gray-600 text-sm mb-1">📍 {b.location}</p>
-                <p className="text-gray-600 text-sm mb-1">🏙️ {b.city}</p>
-                <p className="text-gray-600 text-sm mb-1">
-                  💰 ₹{b.totalPrice.toFixed(2)}
-                </p>
-                <p className="text-gray-600 text-sm mb-2">
-                  📅 {new Date(b.startDate).toLocaleDateString()} →{" "}
-                  {new Date(b.endDate).toLocaleDateString()}
-                </p>
+          {bookings.map((b, index) => {
+            const start = new Date(b.startDate);
+            const end = new Date(b.endDate);
 
-                {/* ✅ Booking status */}
-                <p
-                  className={`font-semibold mb-3 ${
-                    b.bookingStatus === "Completed"
-                      ? "text-green-700"
-                      : b.bookingStatus === "confirmed"
-                      ? "text-blue-700"
-                      : "text-yellow-700"
-                  }`}
-                >
-                  Status: {b.bookingStatus}
-                </p>
+            return (
+              <div
+                key={index}
+                className="bg-white border shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition-all"
+              >
+                {/* VEHICLE IMAGE */}
+                <img
+                  src={b.photos?.[0] || "/placeholder.png"}
+                  alt={b.scootyModel}
+                  className="w-full h-48 object-cover"
+                />
 
-                {/* ✅ End Ride button only if confirmed */}
-                {b.bookingStatus === "confirmed" ? (
-  <button
-    onClick={() => handleEndBooking(b.vehicleId)}
-    className="w-full py-2 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-semibold"
-  >
-    End Ride
-  </button>
-) : b.bookingStatus === "completed" ? (
-  <button
-    disabled
-    className="w-full py-2 rounded-xl bg-gray-300 text-gray-700 font-semibold cursor-not-allowed"
-  >
-    Ride Completed
-  </button>
-) : b.bookingStatus === "canceled" ? (
-  <button
-    disabled
-    className="w-full py-2 rounded-xl bg-red-200 text-red-700 font-semibold cursor-not-allowed"
-  >
-    Booking Cancelled
-  </button>
-) : (
-  <button
-    disabled
-    className="w-full py-2 rounded-xl bg-yellow-400 text-gray-800 font-semibold cursor-not-allowed"
-  >
-    Pending Approval
-  </button>
-)}
+                <div className="p-5 space-y-1">
+                  {/* VEHICLE */}
+                  <h3 className="text-xl font-bold text-blue-900">
+                    {b.scootyModel}
+                  </h3>
+
+                  {/* LOCATION */}
+                  <p className="text-gray-600 text-sm">
+                    📍 {b.pickupLocation?.address}
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    🏙️ {b.pickupLocation?.city}
+                  </p>
+
+                  {/* HOST */}
+                  {b.host && (
+                    <div className="mt-2 bg-blue-50 border border-blue-200 rounded-xl p-3 text-sm">
+                      <p className="font-semibold text-gray-800">
+                        👤 {b.host.name}
+                      </p>
+                      <p className="text-gray-600">✉️ {b.host.email}</p>
+                      {b.host.phone && (
+                        <p className="text-gray-600">📞 {b.host.phone}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* PRICE */}
+                  <p className="text-gray-600 text-sm mt-2">
+                    💰 ₹{b.totalPrice.toFixed(2)}
+                  </p>
+
+                  {/* DATE */}
+                  <p className="text-gray-600 text-sm">
+                    📅 {start.toLocaleDateString()} →{" "}
+                    {end.toLocaleDateString()}
+                  </p>
+
+                  {/* ⏰ TIME (NEW) */}
+                  <p className="text-gray-600 text-sm">
+                    ⏰{" "}
+                    {start.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
+                    →{" "}
+                    {end.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+
+                  {/* STATUS */}
+                  <p
+                    className={`font-semibold mt-2 ${
+                      b.bookingStatus === "completed"
+                        ? "text-green-700"
+                        : b.bookingStatus === "confirmed"
+                        ? "text-blue-700"
+                        : b.bookingStatus === "canceled"
+                        ? "text-red-700"
+                        : "text-yellow-700"
+                    }`}
+                  >
+                    Status: {b.bookingStatus}
+                  </p>
+
+                  {/* ACTION */}
+                  {b.bookingStatus === "confirmed" ? (
+                    <button
+                      onClick={() => handleEndBooking(b.vehicleId)}
+                      className="cursor-pointer w-full mt-3 py-2 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-semibold"
+                    >
+                      End Ride
+                    </button>
+                  ) : b.bookingStatus === "completed" ? (
+                    <button
+                      disabled
+                      className="w-full mt-3 py-2 rounded-xl bg-gray-300 text-gray-700 font-semibold cursor-not-allowed"
+                    >
+                      Ride Completed
+                    </button>
+                  ) : b.bookingStatus === "canceled" ? (
+                    <button
+                      disabled
+                      className="w-full mt-3 py-2 rounded-xl bg-red-200 text-red-700 font-semibold cursor-not-allowed"
+                    >
+                      Booking Cancelled
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className="w-full mt-3 py-2 rounded-xl bg-yellow-400 text-gray-800 font-semibold cursor-not-allowed"
+                    >
+                      Pending Approval
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
