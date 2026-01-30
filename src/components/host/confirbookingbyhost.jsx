@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 /* ================= TIME FORMATTER (IST SAFE) ================= */
-const formatDateTime = (date) =>
-  new Date(date).toLocaleString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
+const cleanDateTime = (isoString) => {
+  if (!isoString) return "";
+  return isoString
+    .replace("T", " ")
+    .replace(":00.000Z", "");
+};
 
 export default function HostBookingsconfirmed() {
   const [bookings, setBookings] = useState([]);
@@ -127,9 +127,9 @@ export default function HostBookingsconfirmed() {
 
                     {/* ✅ TIME (IST CORRECT) */}
                     <p className="text-sm text-gray-700">
-                      🕒 {booking.startDate} →{" "}
-                      {booking.endDate}
-                    </p>
+  🕒 {cleanDateTime(booking.startDate)} →{" "}
+  {cleanDateTime(booking.endDate)}
+</p>
 
                     {/* Price */}
                     <p className="text-sm text-gray-700">
