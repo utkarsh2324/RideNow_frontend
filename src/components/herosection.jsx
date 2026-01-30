@@ -193,60 +193,58 @@ export default function HeroSection() {
 </div>
 
           {/* Dates */}
-          
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div className="text-left">
-    <label className="block text-sm font-medium text-white mb-1">
-      From Date
-    </label>
-    <input
-      type="date"
-      value={fromDate}
-      onChange={(e) => setFromDate(e.target.value)}
-      className="w-full px-4 py-3 rounded-xl bg-white text-gray-800 appearance-none"
-    />
-  </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-left">
+              <label className="block text-sm font-medium text-white mb-1">
+                From Date
+              </label>
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
+              />
+            </div>
 
-  <div className="text-left">
-    <label className="block text-sm font-medium text-white mb-1">
-      To Date
-    </label>
-    <input
-      type="date"
-      value={toDate}
-      onChange={(e) => setToDate(e.target.value)}
-      className="w-full px-4 py-3 rounded-xl bg-white text-gray-800 appearance-none"
-    />
-  </div>
-</div>
+            <div className="text-left">
+              <label className="block text-sm font-medium text-white mb-1">
+                To Date
+              </label>
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
+              />
+            </div>
+          </div>
 
           {/* Times */}
-          {/* Times */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div className="text-left">
-    <label className="block text-sm font-medium text-white mb-1">
-      From Time
-    </label>
-    <input
-      type="time"
-      value={fromTime}
-      onChange={(e) => setFromTime(e.target.value)}
-      className="w-full px-4 py-3 rounded-xl bg-white text-gray-800 appearance-none"
-    />
-  </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-left">
+              <label className="block text-sm font-medium text-white mb-1">
+                From Time
+              </label>
+              <input
+                type="time"
+                value={fromTime}
+                onChange={(e) => setFromTime(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
+              />
+            </div>
 
-  <div className="text-left">
-    <label className="block text-sm font-medium text-white mb-1">
-      To Time
-    </label>
-    <input
-      type="time"
-      value={toTime}
-      onChange={(e) => setToTime(e.target.value)}
-      className="w-full px-4 py-3 rounded-xl bg-white text-gray-800 appearance-none"
-    />
-  </div>
-</div>
+            <div className="text-left">
+              <label className="block text-sm font-medium text-white mb-1">
+                To Time
+              </label>
+              <input
+                type="time"
+                value={toTime}
+                onChange={(e) => setToTime(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
+              />
+            </div>
+          </div>
 
           {/* Search Button */}
           <button
