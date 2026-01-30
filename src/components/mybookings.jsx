@@ -4,7 +4,12 @@ import toast from "react-hot-toast";
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const cleanDateTime = (isoString) => {
+    if (!isoString) return "";
+    return isoString
+      .replace("T", " ")
+      .replace(":00.000Z", "");
+  };
   /* ---------------- FETCH BOOKINGS ---------------- */
   const fetchBookings = async () => {
     try {
@@ -130,11 +135,11 @@ export default function MyBookings() {
                   </p>
 
                   {/* DATE */}
-                  <p className="text-gray-600 text-sm">
-  📅{" "}
-  {new Date(b.startDate).toLocaleDateString()} →{" "}
-  {new Date(b.endDate).toLocaleDateString()}
+                  <p className="text-sm text-gray-700">
+  🕒 {cleanDateTime(booking.startDate)} →{" "}
+  {cleanDateTime(booking.endDate)}
 </p>
+
 
                   {/* STATUS */}
                   <p
