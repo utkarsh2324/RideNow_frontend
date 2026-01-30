@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+/* ================= TIME FORMATTER (FIX) ================= */
+const formatDateTime = (date) =>
+  new Date(date).toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+
 export default function HostBookingsconfirmed() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [confirming, setConfirming] = useState(null); // bookingId
+  const [confirming, setConfirming] = useState(null);
 
   /* ---------------- FETCH HOST BOOKINGS ---------------- */
   const fetchHostBookings = async () => {
     try {
       setLoading(true);
+
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}vehicles/bookings`,
         { credentials: "include" }
@@ -22,13 +31,13 @@ export default function HostBookingsconfirmed() {
         return;
       }
 
-      // ✅ Only keep pending bookings
+      // ✅ Only pending bookings
       const pendingOnly = (data.data || []).filter(
         (b) => b.bookingStatus === "pending"
       );
 
       setBookings(pendingOnly);
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong while loading bookings");
     } finally {
       setLoading(false);
@@ -60,17 +69,15 @@ export default function HostBookingsconfirmed() {
       }
 
       toast.success("Booking confirmed successfully ✅");
-
-      // Refresh pending bookings
       fetchHostBookings();
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong while confirming booking");
     } finally {
       setConfirming(null);
     }
   };
 
-  /* ---------------- LOADING STATE ---------------- */
+  /* ---------------- LOADING ---------------- */
   if (loading) {
     return (
       <div className="h-screen flex justify-center items-center font-semibold text-blue-900">
@@ -116,11 +123,10 @@ export default function HostBookingsconfirmed() {
                       {booking.scootyModel}
                     </h3>
 
-                    {/* Time */}
+                    {/* ✅ TIME (FIXED) */}
                     <p className="text-sm text-gray-700">
-                      🕒{" "}
-                      {new Date(booking.startDate).toLocaleString()} →{" "}
-                      {new Date(booking.endDate).toLocaleString()}
+                      🕒 {formatDateTime(booking.startDate)} →{" "}
+                      {formatDateTime(booking.endDate)}
                     </p>
 
                     {/* Price */}
