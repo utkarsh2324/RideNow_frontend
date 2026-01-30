@@ -127,8 +127,8 @@ export default function HostBookingsconfirmed() {
 
                     {/* ✅ TIME (IST CORRECT) */}
                     <p className="text-sm text-gray-700">
-                      🕒 {formatDateTime(booking.startDate)} →{" "}
-                      {formatDateTime(booking.endDate)}
+                      🕒 {booking.startDate} →{" "}
+                      {booking.endDate}
                     </p>
 
                     {/* Price */}
