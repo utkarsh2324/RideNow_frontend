@@ -37,8 +37,7 @@ export default function SearchResults() {
       if (lat && lng) {
         url += `&lat=${lat}&lng=${lng}`;
       }
-      console.log("LAT LNG 👉", lat, lng);
-      console.log("SEARCH URL 👉", url);
+      
       const res = await fetch(url, { credentials: "include" });
       const data = await res.json();
 
