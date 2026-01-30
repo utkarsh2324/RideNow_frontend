@@ -2,9 +2,18 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 /* ================= TIME FORMATTER ================= */
-const cleanDateTime = (isoString) => {
+/* ================= TIME FORMATTER (IST CORRECT) ================= */
+const formatIST = (isoString) => {
   if (!isoString) return "";
-  return isoString.replace("T", " ").replace(":00.000Z", "");
+  return new Date(isoString).toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
 };
 
 export default function HostBookingsconfirmed() {
@@ -157,9 +166,8 @@ export default function HostBookingsconfirmed() {
 
                     {/* TIME */}
                     <p className="text-sm text-gray-700">
-                      🕒 {cleanDateTime(booking.startDate)} →{" "}
-                      {cleanDateTime(booking.endDate)}
-                    </p>
+  🕒 {formatIST(booking.startDate)} → {formatIST(booking.endDate)}
+</p>
 
                     <p className="text-sm text-gray-700">
                       💰 ₹{booking.totalPrice}

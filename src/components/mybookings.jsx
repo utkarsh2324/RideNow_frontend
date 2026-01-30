@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
+const formatIST = (isoString) => {
+  if (!isoString) return "";
+  return new Date(isoString).toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const cleanDateTime = (isoString) => {
-    if (!isoString) return "";
-    return isoString
-      .replace("T", " ")
-      .replace(":00.000Z", "");
-  };
+  
   /* ---------------- FETCH BOOKINGS ---------------- */
   const fetchBookings = async () => {
     try {
@@ -136,8 +142,7 @@ export default function MyBookings() {
 
                   {/* DATE */}
                   <p className="text-sm text-gray-700">
-  🕒 {cleanDateTime(b.startDate)} →{" "}
-  {cleanDateTime(b.endDate)}
+  🕒 {formatIST(b.startDate)} → {formatIST(b.endDate)}
 </p>
 
 
