@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-/* ================= TIME FORMATTER (FIX) ================= */
+/* ================= TIME FORMATTER (IST SAFE) ================= */
 const formatDateTime = (date) =>
   new Date(date).toLocaleString("en-IN", {
     timeZone: "Asia/Kolkata",
@@ -12,7 +12,7 @@ const formatDateTime = (date) =>
 export default function HostBookingsconfirmed() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [confirming, setConfirming] = useState(null);
+  const [confirming, setConfirming] = useState(null); // bookingId
 
   /* ---------------- FETCH HOST BOOKINGS ---------------- */
   const fetchHostBookings = async () => {
@@ -31,7 +31,7 @@ export default function HostBookingsconfirmed() {
         return;
       }
 
-      // ✅ Only pending bookings
+      // ✅ Only show pending bookings
       const pendingOnly = (data.data || []).filter(
         (b) => b.bookingStatus === "pending"
       );
@@ -69,6 +69,8 @@ export default function HostBookingsconfirmed() {
       }
 
       toast.success("Booking confirmed successfully ✅");
+
+      // Refresh list
       fetchHostBookings();
     } catch {
       toast.error("Something went wrong while confirming booking");
@@ -77,7 +79,7 @@ export default function HostBookingsconfirmed() {
     }
   };
 
-  /* ---------------- LOADING ---------------- */
+  /* ---------------- LOADING STATE ---------------- */
   if (loading) {
     return (
       <div className="h-screen flex justify-center items-center font-semibold text-blue-900">
@@ -123,7 +125,7 @@ export default function HostBookingsconfirmed() {
                       {booking.scootyModel}
                     </h3>
 
-                    {/* ✅ TIME (FIXED) */}
+                    {/* ✅ TIME (IST CORRECT) */}
                     <p className="text-sm text-gray-700">
                       🕒 {formatDateTime(booking.startDate)} →{" "}
                       {formatDateTime(booking.endDate)}
