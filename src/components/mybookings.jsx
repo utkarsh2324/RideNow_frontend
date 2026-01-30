@@ -136,8 +136,8 @@ export default function MyBookings() {
 
                   {/* DATE */}
                   <p className="text-sm text-gray-700">
-  🕒 {cleanDateTime(booking.startDate)} →{" "}
-  {cleanDateTime(booking.endDate)}
+  🕒 {cleanDateTime(b.startDate)} →{" "}
+  {cleanDateTime(b.endDate)}
 </p>
 
 
