@@ -131,23 +131,10 @@ export default function MyBookings() {
 
                   {/* DATE */}
                   <p className="text-gray-600 text-sm">
-                    📅 {start.toLocaleDateString()} →{" "}
-                    {end.toLocaleDateString()}
-                  </p>
-
-                  {/* ⏰ TIME (NEW) */}
-                  <p className="text-gray-600 text-sm">
-                    ⏰{" "}
-                    {start.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}{" "}
-                    →{" "}
-                    {end.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
+  📅{" "}
+  {new Date(b.startDate).toLocaleDateString()} →{" "}
+  {new Date(b.endDate).toLocaleDateString()}
+</p>
 
                   {/* STATUS */}
                   <p
