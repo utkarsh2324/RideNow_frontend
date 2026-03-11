@@ -165,51 +165,57 @@ export default function HeroSection() {
                 </div>
 
                 {/* Pickup Date & Time */}
-                <div className="relative flex flex-col sm:flex-row gap-3 z-10">
-                   <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 flex-1 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
-                      <div className="w-2.5 h-2.5 bg-blue-950 shrink-0 mr-4 sm:hidden"></div>
-                      <input
-                        type="date"
-                        value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
-                        className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
-                        required
-                      />
-                   </div>
-                   <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 sm:w-1/3 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
-                      <input
-                        type="time"
-                        value={fromTime}
-                        onChange={(e) => setFromTime(e.target.value)}
-                        className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
-                        required
-                      />
-                   </div>
+                <div className="flex flex-col gap-1 z-10">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1 mb-1">Pickup</span>
+                  <div className="relative flex flex-col sm:flex-row gap-3">
+                     <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 flex-1 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                        <div className="w-2.5 h-2.5 bg-blue-950 shrink-0 mr-4 sm:hidden"></div>
+                        <input
+                          type="date"
+                          value={fromDate}
+                          onChange={(e) => setFromDate(e.target.value)}
+                          className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
+                          required
+                        />
+                     </div>
+                     <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 sm:w-1/3 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                        <input
+                          type="time"
+                          value={fromTime}
+                          onChange={(e) => setFromTime(e.target.value)}
+                          className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
+                          required
+                        />
+                     </div>
+                  </div>
                 </div>
                 
                 {/* Dropoff Date & Time */}
-                <div className="relative flex flex-col sm:flex-row gap-3 z-10">
-                   <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 flex-1 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
-                      <div className="w-2.5 h-2.5 border-2 border-blue-950 shrink-0 mr-4"></div>
-                      <input
-                        type="date"
-                        value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
-                        className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
-                        title="Return Date"
-                        required
-                      />
-                   </div>
-                   <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 sm:w-1/3 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
-                      <input
-                        type="time"
-                        value={toTime}
-                        onChange={(e) => setToTime(e.target.value)}
-                        className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
-                        title="Return Time"
-                        required
-                      />
-                   </div>
+                <div className="flex flex-col gap-1 z-10 mt-2 sm:mt-0">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1 mb-1">Return</span>
+                  <div className="relative flex flex-col sm:flex-row gap-3">
+                     <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 flex-1 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                        <div className="w-2.5 h-2.5 border-2 border-blue-950 shrink-0 mr-4 sm:hidden"></div>
+                        <input
+                          type="date"
+                          value={toDate}
+                          onChange={(e) => setToDate(e.target.value)}
+                          className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
+                          title="Return Date"
+                          required
+                        />
+                     </div>
+                     <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 sm:w-1/3 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                        <input
+                          type="time"
+                          value={toTime}
+                          onChange={(e) => setToTime(e.target.value)}
+                          className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
+                          title="Return Time"
+                          required
+                        />
+                     </div>
+                  </div>
                 </div>
 
               </div>
