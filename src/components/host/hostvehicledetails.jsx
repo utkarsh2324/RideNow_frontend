@@ -207,135 +207,151 @@ export default function VehicleDetail() {
   /* ---------------- UI ---------------- */
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 px-6">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 border">
+    <div className="min-h-screen bg-slate-50 pt-24 px-6 pb-12">
+      <div className="max-w-4xl mx-auto bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-3xl p-8 sm:p-10">
 
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-blue-900 flex items-center gap-2">
-            <Car className="w-7 h-7" /> {vehicle.scootyModel}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b border-slate-100 pb-6">
+          <h2 className="text-3xl font-extrabold text-blue-950 tracking-tight flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
+              <Car className="w-6 h-6 text-blue-600" />
+            </div>
+            {vehicle.scootyModel}
           </h2>
 
           <div className="flex gap-3">
             <button
               onClick={() => (editing ? handleUpdateVehicle() : setEditing(true))}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-900 text-white rounded-lg"
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all shadow-sm hover:shadow-md active:scale-95 ${
+                editing ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-blue-950 hover:bg-blue-900 text-white"
+              }`}
             >
-              {editing ? <Save size={18} /> : <Edit size={18} />}
+              {editing ? <Save className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
               {editing ? "Save" : "Edit"}
             </button>
 
             <button
               onClick={handleDelete}
-              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white text-red-600 border border-red-200 rounded-xl hover:bg-red-50 font-bold transition-all shadow-sm active:scale-95"
             >
-              <Trash2 size={18} /> Delete
+              <Trash2 className="w-5 h-5" /> Delete
             </button>
           </div>
         </div>
 
         {/* Pickup Location */}
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-blue-900 flex items-center gap-2">
-              <MapPin /> Pickup Location
+            <h3 className="text-xl font-bold text-blue-950 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-blue-600" /> Pickup Location
             </h3>
 
             {editing && (
               <button
                 onClick={handleUseGPS}
                 disabled={locating}
-                className="flex items-center gap-2 text-sm px-3 py-2 bg-blue-100 text-blue-900 rounded-lg"
+                className="flex items-center gap-2 text-sm px-4 py-2 h-10 bg-blue-50 text-blue-800 font-bold rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
               >
-                <Navigation size={16} />
+                <Navigation className="w-4 h-4" />
                 {locating ? "Locating..." : "Use GPS"}
               </button>
             )}
           </div>
 
-          {["address", "landmark", "city"].map((field) => (
-            <div key={field}>
-              <label className="text-sm text-gray-600 capitalize">
-                {field}
-              </label>
-              {editing ? (
-                <input
-                  value={updateData[field]}
-                  onChange={(e) =>
-                    setUpdateData({ ...updateData, [field]: e.target.value })
-                  }
-                  className="w-full border rounded p-2"
-                />
-              ) : (
-                <p className="font-medium">
-                  {vehicle.pickupLocation?.[field] || "—"}
-                </p>
-              )}
-            </div>
-          ))}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {["address", "landmark", "city"].map((field) => (
+              <div key={field} className={field === "address" ? "col-span-full" : ""}>
+                <label className="block text-sm font-semibold text-slate-500 capitalize mb-1">
+                  {field}
+                </label>
+                {editing ? (
+                  <input
+                    value={updateData[field]}
+                    onChange={(e) =>
+                      setUpdateData({ ...updateData, [field]: e.target.value })
+                    }
+                    className="w-full border border-slate-200 bg-slate-50 rounded-xl p-3 text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-950/20"
+                  />
+                ) : (
+                  <p className="font-bold text-slate-800 text-lg">
+                    {vehicle.pickupLocation?.[field] || "—"}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
 
           {updateData.lat && updateData.lng && (
-            <p className="text-green-600 text-sm">
+            <p className="text-emerald-600 text-sm font-bold flex items-center gap-1.5 mt-2">
               📍 GPS coordinates updated
             </p>
           )}
         </div>
 
         {/* Pricing */}
-        <div className="mt-6 border-t pt-4">
-          <h3 className="text-xl font-bold text-blue-900 mb-2">Pricing</h3>
+        <div className="mt-8 border-t border-slate-100 pt-6">
+          <h3 className="text-xl font-bold text-blue-950 mb-4 flex items-center gap-2">
+            Pricing
+          </h3>
 
-          {["weekdayPrice", "weekendPrice"].map((p) => (
-            <div key={p} className="mb-3">
-              <label className="text-sm text-gray-600">{p}</label>
-              {editing ? (
-                <input
-                  type="number"
-                  value={updateData[p]}
-                  onChange={(e) =>
-                    setUpdateData({ ...updateData, [p]: e.target.value })
-                  }
-                  className="w-full border rounded p-2"
-                />
-              ) : (
-                <p className="font-semibold">
-                  ₹{vehicle.pricing?.[p]}
-                </p>
-              )}
-            </div>
-          ))}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {["weekdayPrice", "weekendPrice"].map((p) => (
+              <div key={p} className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                <label className="block text-sm font-semibold text-slate-500 mb-2">
+                  {p === "weekdayPrice" ? "Weekday Price (₹)" : "Weekend Price (₹)"}
+                </label>
+                {editing ? (
+                  <input
+                    type="number"
+                    value={updateData[p]}
+                    onChange={(e) =>
+                      setUpdateData({ ...updateData, [p]: e.target.value })
+                    }
+                    className="w-full border border-slate-200 rounded-lg p-2.5 text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-950/20"
+                  />
+                ) : (
+                  <p className="text-2xl font-black text-blue-950">
+                    ₹{vehicle.pricing?.[p]}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Host */}
-        <div className="mt-6 border-t pt-4">
-          <h3 className="text-xl font-bold text-blue-900 flex items-center gap-2">
-            <User /> Host Info
+        <div className="mt-8 border-t border-slate-100 pt-6">
+          <h3 className="text-xl font-bold text-blue-950 mb-4 flex items-center gap-2">
+            <User className="w-5 h-5 text-blue-600" /> Host Info
           </h3>
-          <p><strong>Name:</strong> {vehicle.host?.name}</p>
-          <p><strong>Email:</strong> {vehicle.host?.email}</p>
-          <p><strong>Phone:</strong> {vehicle.host?.phone}</p>
+          <div className="space-y-1">
+            <p className="text-slate-700 text-lg"><strong className="font-bold text-blue-950">Name:</strong> {vehicle.host?.name}</p>
+            <p className="text-slate-700 text-lg"><strong className="font-bold text-blue-950">Email:</strong> {vehicle.host?.email}</p>
+            <p className="text-slate-700 text-lg"><strong className="font-bold text-blue-950">Phone:</strong> {vehicle.host?.phone}</p>
+          </div>
         </div>
-          {/* RC DOCUMENT */}
-<div className="mt-6 border-t pt-4">
-  <h3 className="text-xl font-bold text-blue-900 mb-2">
-    📄 Vehicle Documents
-  </h3>
 
-  {vehicle.rcDocument ? (
-    <a
-      href={vehicle.rcDocument}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-900 rounded-lg hover:bg-blue-200 transition"
-    >
-      📄 View RC
-    </a>
-  ) : (
-    <p className="text-gray-500 text-sm">
-      RC document not available
-    </p>
-  )}
-</div>
+        {/* RC DOCUMENT */}
+        <div className="mt-8 border-t border-slate-100 pt-6">
+          <h3 className="text-xl font-bold text-blue-950 mb-3">
+            📄 Vehicle Documents
+          </h3>
+
+          {vehicle.rcDocument ? (
+            <a
+              href={vehicle.rcDocument}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 bg-blue-50 text-blue-800 font-bold border border-blue-100 rounded-xl hover:bg-blue-100 transition shadow-sm"
+            >
+              📄 View RC Document
+            </a>
+          ) : (
+            <p className="text-slate-500 font-medium">
+              RC document not available
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

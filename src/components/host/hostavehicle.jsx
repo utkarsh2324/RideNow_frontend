@@ -193,10 +193,12 @@ export default function HostVehicle() {
   /* ---------------- UI ---------------- */
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 px-6">
-      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-8 border">
-        <h2 className="text-3xl font-bold text-blue-900 flex items-center gap-2 mb-6">
-          <Bike className="w-7 h-7" />
+    <div className="min-h-screen bg-slate-50 pt-24 px-6 pb-12">
+      <div className="max-w-3xl mx-auto bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] rounded-3xl p-8 sm:p-10 border border-slate-100">
+        <h2 className="text-3xl font-extrabold text-blue-950 tracking-tight flex items-center gap-3 mb-8 border-b border-slate-100 pb-6">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center shrink-0">
+            <Bike className="w-6 h-6 text-indigo-600" />
+          </div>
           Host Your Vehicle
         </h2>
 
@@ -224,7 +226,9 @@ export default function HostVehicle() {
             </label>
 
             <div className="flex gap-2 items-center">
-              <MapPin className="text-blue-900 shrink-0" />
+              <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-200 shrink-0">
+                <MapPin className="w-5 h-5 text-slate-600" />
+              </div>
 
               <input
                 type="text"
@@ -239,9 +243,9 @@ export default function HostVehicle() {
                 type="button"
                 onClick={handleUseCurrentLocation}
                 disabled={locating}
-                className="px-3 py-2 bg-blue-900 text-white rounded-lg text-sm whitespace-nowrap"
+                className="px-4 py-2.5 h-11 bg-blue-950 text-white rounded-xl text-sm font-medium hover:bg-blue-900 disabled:opacity-50 transition-colors whitespace-nowrap flex items-center justify-center gap-2 shadow-sm"
               >
-                <Navigation className="w-4 h-4 inline" />{" "}
+                <Navigation className="w-4 h-4" />
                 {locating ? "Locating..." : "Use GPS"}
               </button>
             </div>
@@ -253,9 +257,9 @@ export default function HostVehicle() {
     <span>Using your current location</span>
   </div>
 ) : (
-  <div className="mt-2 flex items-center gap-2 text-sm text-blue-700 bg-blue-50 px-3 py-2 rounded-lg">
-    <span>💡</span>
-    <span>
+  <div className="mt-3 flex items-start gap-3 text-sm text-slate-700 bg-indigo-50/50 border border-indigo-100 p-4 rounded-xl">
+    <span className="text-lg">💡</span>
+    <span className="mt-0.5 leading-snug">
       Please use GPS for accurate pickup location and better search results
     </span>
   </div>
@@ -345,9 +349,9 @@ export default function HostVehicle() {
           </div>
 
           {/* RC */}
-          <div>
-            <label className="block font-medium text-gray-700 mb-1 flex items-center gap-2">
-              <FileText className="text-blue-900" />
+          <div className="pt-4 border-t border-slate-100">
+            <label className="block font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-indigo-600" />
               RC Document (PDF)
             </label>
             <input
@@ -360,13 +364,13 @@ export default function HostVehicle() {
           </div>
 
           {/* Submit */}
-          <div className="text-center pt-4">
+          <div className="text-center pt-8 border-t border-slate-100 mt-2 text-red-500">
             <button
               onClick={handleHostVehicle}
               disabled={uploading}
-              className="px-6 py-3 rounded-xl text-white font-semibold bg-blue-900 hover:bg-blue-800 transition"
+              className="w-full sm:w-auto px-8 py-3.5 h-12 flex items-center justify-center mx-auto rounded-xl text-white font-bold bg-blue-950 hover:bg-blue-900 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all text-lg"
             >
-              {uploading ? "Uploading..." : "Host Vehicle"}
+              {uploading ? "Uploading Details..." : "Host Vehicle Now"}
             </button>
           </div>
         </div>

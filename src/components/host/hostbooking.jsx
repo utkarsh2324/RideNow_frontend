@@ -47,10 +47,10 @@ export default function HostBookings() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 px-6">
+    <div className="min-h-screen bg-slate-50 pt-24 px-6 pb-12">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-blue-900 mb-6 text-center">
-          🛵 Active & Completed Bookings
+        <h2 className="text-3xl font-extrabold text-blue-950 mb-8 flex items-center justify-center gap-3">
+          <span className="text-4xl">🛵</span> Active & Completed Bookings
         </h2>
 
         {bookings.length === 0 ? (
@@ -68,13 +68,13 @@ export default function HostBookings() {
 
               const statusColor =
                 booking.bookingStatus === "confirmed"
-                  ? "bg-green-100 text-green-700 border-green-400"
-                  : "bg-blue-100 text-blue-700 border-blue-400";
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200/60"
+                  : "bg-indigo-50 text-indigo-700 border-indigo-200/60";
 
               return (
                 <div
                   key={booking.bookingId}
-                  className="bg-white shadow-md border rounded-2xl overflow-hidden hover:shadow-lg transition-all"
+                  className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
                 >
                   {/* Vehicle Image */}
                   <img
@@ -84,28 +84,32 @@ export default function HostBookings() {
                   />
 
                   {/* Vehicle + Renter Info */}
-                  <div className="p-5 space-y-3">
-                    <h3 className="text-xl font-semibold text-blue-900">
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="text-xl font-bold text-blue-950 leading-tight mb-4">
                       {booking.scootyModel}
                     </h3>
 
-                    <p className="text-sm text-gray-700">
-                      📅{" "}
-                      {new Date(booking.startDate).toLocaleDateString()} →{" "}
-                      {new Date(booking.endDate).toLocaleDateString()}
+                    <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 mb-4 text-sm text-slate-700 space-y-1">
+                      <p className="flex items-center gap-2">
+                        <span className="text-slate-400">📅</span>
+                        {new Date(booking.startDate).toLocaleDateString()} <span className="text-slate-400 text-xs">to</span> {new Date(booking.endDate).toLocaleDateString()}
+                      </p>
+                    </div>
+
+                    <p className="text-lg font-black text-blue-950 mb-4 flex items-center gap-1">
+                      <span className="text-slate-500 font-medium text-sm">Total Price:</span> 
+                      ₹{booking.totalPrice?.toFixed(2)}
                     </p>
 
-                    <p className="text-sm text-gray-700">
-                      💰 Total Price: ₹{booking.totalPrice?.toFixed(2)}
-                    </p>
+                    <div>
+                      <span
+                        className={`inline-flex px-3 py-1 rounded-full text-xs font-bold border uppercase tracking-wide ${statusColor}`}
+                      >
+                        {booking.bookingStatus}
+                      </span>
+                    </div>
 
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${statusColor}`}
-                    >
-                      {booking.bookingStatus.toUpperCase()}
-                    </span>
-
-                    <hr className="my-2" />
+                    <hr className="border-slate-100 my-5" />
 
                     {/* Renter Details */}
                     <div className="flex items-center gap-3">

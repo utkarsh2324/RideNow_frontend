@@ -70,36 +70,36 @@ export default function HostDocumentVerification() {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4 py-16">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-2xl border">
-        <h1 className="text-4xl font-bold text-blue-900 text-center mb-4">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-24">
+      <div className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-3xl p-8 sm:p-10 w-full max-w-2xl">
+        <h1 className="text-3xl font-extrabold text-blue-950 text-center mb-4 tracking-tight">
           Host Document Upload
         </h1>
 
-        <p className="text-center text-gray-600 mb-8">
+        <p className="text-center text-slate-500 mb-10 font-medium">
           Upload your Aadhaar Card. Our team will manually verify it.
         </p>
 
-        <div className="border border-gray-200 rounded-2xl p-6">
-          <h2 className="text-2xl font-semibold text-blue-900 mb-2">
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8">
+          <h2 className="text-xl font-bold text-blue-950 mb-1">
             Aadhaar Card
           </h2>
 
-          <p className="text-gray-500 text-sm mb-4">
+          <p className="text-slate-500 text-sm mb-6 font-medium">
             Accepted formats: PDF, JPG, PNG
           </p>
 
           {/* Existing document */}
           {existingDoc && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-              <p className="text-blue-800 text-sm font-medium mb-1">
+            <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6">
+              <p className="text-indigo-800 text-sm font-semibold mb-2">
                 📄 Uploaded document:
               </p>
               <a
                 href={existingDoc}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-700 underline break-all text-sm"
+                className="text-indigo-600 hover:text-indigo-800 underline break-all text-sm font-medium transition-colors"
               >
                 View Aadhaar
               </a>
@@ -107,17 +107,17 @@ export default function HostDocumentVerification() {
           )}
 
           {/* Upload */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 mt-2">
             <input
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"
               onChange={(e) => setAadharFile(e.target.files[0])}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full border border-slate-300 bg-white rounded-xl p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-950/20"
             />
 
             <button
               onClick={handleUpload}
-              className="px-6 py-2 rounded-lg font-semibold text-white bg-blue-900 hover:bg-blue-800 transition"
+              className="px-8 py-3 rounded-xl font-bold text-white bg-blue-950 hover:bg-blue-900 transition-all shadow-sm active:scale-95 shrink-0"
             >
               {existingDoc ? "Re-upload" : "Upload"}
             </button>

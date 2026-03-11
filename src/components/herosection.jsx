@@ -93,14 +93,13 @@ export default function HeroSection() {
     ) {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}location/reverse?lat=${latitude}&lng=${longitude}`,
-          { credentials: "include" }
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`
         );
   
         const data = await res.json();
   
-        if (!data.length) {
-          toast.error("Location not found");
+        if (!data || data.length === 0) {
+          toast.error("Location not found. Please try a different area.");
           return;
         }
   
@@ -110,7 +109,7 @@ export default function HeroSection() {
         setLat(latitude);
         setLng(longitude);
       } catch {
-        toast.error("Failed to locate entered place");
+        toast.error("Failed to locate entered place. Check your connection.");
         return;
       }
     }
@@ -126,146 +125,152 @@ export default function HeroSection() {
     );
   };
 
-  /* ---------------- UI ---------------- */
-
   return (
-    <section
-      className="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/hero-scooty2.png')" }}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40"></div>
+    <>
+    <section className="bg-white min-h-[calc(100vh-80px)] pt-24 pb-12 flex items-center relative overflow-hidden">
+      <div className="max-w-[1300px] mx-auto px-6 sm:px-8 lg:px-12 w-full">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+          
+          {/* Left Content Form */}
+          <div className="w-full lg:w-[45%] flex flex-col pt-4 lg:pt-0">
+            <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-bold text-blue-950 leading-[1.05] tracking-tight mb-8">
+              Request a ride for now or later
+            </h1>
+            
+            {/* Form */}
+            <div className="w-full max-w-md relative z-10">
+              {/* Input Group */}
+              <div className="relative flex flex-col gap-3 mb-8">
+                {/* Connecting Line */}
+                <div className="absolute left-[20px] top-[40px] bottom-[110px] w-0.5 bg-slate-300 z-0 hidden sm:block"></div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center text-white px-6 w-full">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
-          Ride Your Freedom with{" "}
-          <span className="text-blue-900">RideNow</span>
-        </h1>
+                {/* Location */}
+                <div className="relative flex items-center bg-slate-100 rounded-lg px-4 py-3.5 z-10 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                  <div className="w-2.5 h-2.5 rounded-full bg-blue-950 shrink-0 mr-4"></div>
+                  <input
+                    type="text"
+                    placeholder="Pickup location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="flex-1 bg-transparent border-none text-blue-950 font-medium text-lg placeholder-slate-500 focus:outline-none"
+                  />
+                  <button
+                    onClick={handleUseGPS}
+                    disabled={locating}
+                    className="ml-2 text-blue-950 hover:text-slate-600 transition-colors shrink-0 p-1.5 rounded-full hover:bg-slate-300"
+                    title="Use current location"
+                  >
+                    <Navigation size={20} className={locating ? "animate-pulse" : ""} />
+                  </button>
+                </div>
 
-        <p className="text-lg md:text-xl mb-8 opacity-90">
-          Rent or Host a Scooty with ease and flexibility.
-        </p>
+                {/* Pickup Date & Time */}
+                <div className="relative flex flex-col sm:flex-row gap-3 z-10">
+                   <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 flex-1 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                      <div className="w-2.5 h-2.5 bg-blue-950 shrink-0 mr-4 sm:hidden"></div>
+                      <input
+                        type="date"
+                        value={fromDate}
+                        onChange={(e) => setFromDate(e.target.value)}
+                        className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
+                        required
+                      />
+                   </div>
+                   <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 sm:w-1/3 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                      <input
+                        type="time"
+                        value={fromTime}
+                        onChange={(e) => setFromTime(e.target.value)}
+                        className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
+                        required
+                      />
+                   </div>
+                </div>
+                
+                {/* Dropoff Date & Time */}
+                <div className="relative flex flex-col sm:flex-row gap-3 z-10">
+                   <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 flex-1 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                      <div className="w-2.5 h-2.5 border-2 border-blue-950 shrink-0 mr-4"></div>
+                      <input
+                        type="date"
+                        value={toDate}
+                        onChange={(e) => setToDate(e.target.value)}
+                        className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
+                        title="Return Date"
+                        required
+                      />
+                   </div>
+                   <div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 sm:w-1/3 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                      <input
+                        type="time"
+                        value={toTime}
+                        onChange={(e) => setToTime(e.target.value)}
+                        className="w-full bg-transparent border-none text-blue-950 font-medium text-lg focus:outline-none"
+                        title="Return Time"
+                        required
+                      />
+                   </div>
+                </div>
 
-        {/* Search Box */}
-        <div className="max-w-2xl mx-auto bg-white/20 backdrop-blur-lg rounded-2xl p-6 space-y-4 shadow-lg">
+              </div>
 
-          {/* Location */}
-          {/* Location */}
-<div className="text-left">
-  <label className="block text-sm font-medium text-white mb-1">
-    Location
-  </label>
-
-  <div className="flex gap-2 items-stretch">
-  <input
-    type="text"
-    placeholder="Enter Location"
-    value={location}
-    onChange={(e) => setLocation(e.target.value)}
-    className="flex-1 px-4 py-3 rounded-xl bg-white/90 text-gray-800 text-base"
-  />
-
-  <button
-    type="button"
-    onClick={handleUseGPS}
-    disabled={locating}
-    className="min-w-[48px] min-h-[48px] flex items-center justify-center
-               bg-blue-900 text-white rounded-xl
-               active:scale-95 transition
-               disabled:opacity-60"
-    title="Use current location"
-  >
-    <Navigation size={20} />
-  </button>
-</div>
-
-  {/* ✅ GPS status */}
-  {lat && lng ? (
-    <p className="text-green-200 text-sm mt-1">
-      📍 Using your current location
-    </p>
-  ) : (
-    <p className="text-yellow-200 text-sm mt-1">
-      💡 Tip: Choose GPS for better nearby results
-    </p>
-  )}
-</div>
-
-          {/* Dates */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-left">
-              <label className="block text-sm font-medium text-white mb-1">
-                From Date
-              </label>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
-              />
+              <button
+                onClick={handleSearch}
+                className="bg-blue-950 hover:bg-blue-900 text-white font-bold tracking-wide text-lg px-8 py-4 rounded-lg transition-all cursor-pointer w-max active:scale-[0.98]"
+              >
+                Search Vehicles
+              </button>
             </div>
-
-            <div className="text-left">
-              <label className="block text-sm font-medium text-white mb-1">
-                To Date
-              </label>
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
-              />
-            </div>
+            
           </div>
 
-          {/* Times */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-left">
-              <label className="block text-sm font-medium text-white mb-1">
-                From Time
-              </label>
-              <input
-                type="time"
-                value={fromTime}
-                onChange={(e) => setFromTime(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
-              />
-            </div>
-
-            <div className="text-left">
-              <label className="block text-sm font-medium text-white mb-1">
-                To Time
-              </label>
-              <input
-                type="time"
-                value={toTime}
-                onChange={(e) => setToTime(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800"
-              />
+          {/* Right Map Embed */}
+          <div className="w-full lg:w-[50%] flex justify-end relative h-[500px] lg:h-[600px]">
+            <div className="w-full h-full max-w-[600px] overflow-hidden rounded-[2rem] bg-slate-100 shadow-xl border border-slate-100 relative">
+               <iframe
+                 title="Google Map"
+                 src={
+                   lat && lng
+                     ? `https://maps.google.com/maps?q=${lat},${lng}&t=&z=13&ie=UTF8&iwloc=&output=embed`
+                     : "https://maps.google.com/maps?q=India&t=&z=5&ie=UTF8&iwloc=&output=embed"
+                 }
+                 width="100%"
+                 height="100%"
+                 style={{ border: 0 }}
+                 allowFullScreen=""
+                 loading="lazy"
+                 referrerPolicy="no-referrer-when-downgrade"
+                 className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+               ></iframe>
             </div>
           </div>
-
-          {/* Search Button */}
-          <button
-            onClick={handleSearch}
-            className="w-full px-5 py-3 bg-blue-900 hover:bg-blue-800 text-white rounded-xl font-semibold shadow-md transition"
-          >
-            Search
-          </button>
+          
         </div>
       </div>
-{/* Footer */}
-<div className="absolute bottom-4 w-full text-center text-white text-sm opacity-90 px-4 z-10">
-  <p className="font-medium">
-    © 2026 RideNow. All rights reserved.
-  </p>
-  <p className="mt-1 text-l md:text-xl font-bold opacity-80">
-    For support:{" "}
-    <span className="font-medium">+91 8707230485</span> |{" "}
-    <span className="font-medium">+91 6387634132</span>
-  </p>
-</div>
     </section>
+
+    {/* Footer / Support */}
+    <footer className="bg-white border-t border-slate-200 py-8 px-6">
+      <div className="max-w-[1300px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        
+        <div className="flex items-center gap-2">
+          <div className="bg-blue-950 rounded-lg p-1.5 flex items-center justify-center shadow-lg shadow-blue-900/20">
+            <Navigation className="w-5 h-5 text-white" />
+          </div>
+          <span className="font-extrabold text-blue-950 text-xl tracking-tight">RideNow</span>
+        </div>
+        
+        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-8">
+          <p className="text-slate-500 font-medium text-sm">
+            © {new Date().getFullYear()} RideNow. All rights reserved.
+          </p>
+          <div className="flex gap-4 items-center">
+            <span className="text-sm font-bold text-slate-700">Support:</span>
+            <a href="tel:+918707230485" className="text-blue-600 font-bold text-sm hover:underline">+91 8707230485 / 6387634132</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    </>
   );
 }

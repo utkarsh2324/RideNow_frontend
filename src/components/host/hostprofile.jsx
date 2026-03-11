@@ -280,52 +280,53 @@ export default function HostProfile() {
     host.isPhoneVerified;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-center gap-6">
-        <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0">
-          {host.profile?.photo ? (
-            <img
-              src={host.profile.photo}
-              alt="Host Profile"
-              className="w-full h-full rounded-full object-cover shadow-lg"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center rounded-full bg-gray-200 shadow-lg">
-              <User className="w-12 h-12 text-gray-500" />
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col justify-center w-full space-y-2">
-          <div className="flex items-center gap-2 justify-center sm:justify-start">
-            <h2 className="text-2xl font-bold">{host.name || "Unnamed Host"}</h2>
-            <ShieldCheck
-              className={`w-5 h-5 ${
-                isProfileVerified ? "text-green-500" : "text-red-500"
-              }`}
-            />
+    <div className="min-h-screen bg-slate-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row items-center gap-6 mb-10">
+          <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0">
+            {host.profile?.photo ? (
+              <img
+                src={host.profile.photo}
+                alt="Host Profile"
+                className="w-full h-full rounded-2xl object-cover shadow-[0_4px_20px_rgb(0,0,0,0.08)] border-4 border-white"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center rounded-2xl bg-slate-200 shadow-sm border-4 border-white">
+                <User className="w-14 h-14 text-slate-400" />
+              </div>
+            )}
           </div>
-          <span className="text-gray-500 text-sm text-center sm:text-left">
-            Joined on {new Date(host.createdAt).toLocaleDateString()}
-          </span>
+          <div className="flex flex-col justify-center w-full space-y-2">
+            <div className="flex items-center gap-2 justify-center sm:justify-start">
+              <h2 className="text-3xl font-extrabold text-blue-950 tracking-tight">{host.name || "Unnamed Host"}</h2>
+              <ShieldCheck
+                className={`w-6 h-6 ${
+                  isProfileVerified ? "text-emerald-500" : "text-slate-300"
+                }`}
+              />
+            </div>
+            <span className="text-slate-500 text-sm font-medium text-center sm:text-left">
+              Joined on {new Date(host.createdAt).toLocaleDateString()}
+            </span>
+          </div>
         </div>
-      </div>
 
-      {/* 📸 Profile Photo Section */}
-      <div className="bg-white shadow-md rounded-2xl p-6">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Camera className="w-5 h-5" /> Profile Photo
-          </h3>
-          <button
-            onClick={() =>
-              setEditSection(editSection === "photo" ? null : "photo")
-            }
-            className="cursor-pointer px-3 py-1 text-sm border rounded-lg"
-          >
-            {editSection === "photo" ? "Cancel" : "Edit"}
-          </button>
-        </div>
+        {/* 📸 Profile Photo Section */}
+        <div className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-3xl p-6 sm:p-8">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+            <h3 className="text-xl font-bold text-blue-950 flex items-center gap-3">
+              <Camera className="w-5 h-5 text-indigo-600" /> Profile Photo
+            </h3>
+            <button
+              onClick={() =>
+                setEditSection(editSection === "photo" ? null : "photo")
+              }
+              className="cursor-pointer px-4 py-2 text-sm font-medium bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors"
+            >
+              {editSection === "photo" ? "Cancel" : "Edit"}
+            </button>
+          </div>
 
         {editSection === "photo" && (
           <div className="mt-4 flex flex-col items-center gap-4">
@@ -338,13 +339,13 @@ export default function HostProfile() {
                 <div className="flex gap-3">
                   <button
                     onClick={handleRetake}
-                    className="cursor-pointer px-4 py-2 border rounded-lg"
+                    className="cursor-pointer px-5 py-2.5 font-medium border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     Retake
                   </button>
                   <button
                     onClick={handleUploadPhoto}
-                    className="cursor-pointer px-4 py-2 bg-blue-700 text-white rounded-lg"
+                    className="cursor-pointer px-5 py-2.5 font-medium bg-blue-950 text-white rounded-xl hover:bg-blue-900 transition-colors shadow-sm"
                   >
                     Upload Selfie
                   </button>
@@ -356,11 +357,11 @@ export default function HostProfile() {
                   id="hostVideo"
                   autoPlay
                   playsInline
-                  className="w-48 h-48 rounded-lg border"
+                  className="w-48 h-48 rounded-2xl border"
                 />
                 <button
                   onClick={handleCapture}
-                  className="cursor-pointer px-4 py-2 bg-blue-700 text-white rounded-lg"
+                  className="cursor-pointer px-5 py-2.5 font-medium bg-blue-950 text-white rounded-xl hover:bg-blue-900 transition-colors shadow-sm"
                 >
                   Capture Selfie
                 </button>
@@ -369,24 +370,24 @@ export default function HostProfile() {
           </div>
         )}
       </div>
-      {/* 🏦 UPI ID Section */}
-      <div className="bg-white shadow-md rounded-2xl p-6">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-blue-900" /> UPI ID
-          </h3>
-          <button
-            onClick={() => setEditSection(editSection === "upi" ? null : "upi")}
-            disabled={editSection && editSection !== "upi"}
-            className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
-          >
-            {editSection === "upi" ? "Cancel" : host.upiid ? "Edit" : "Add"}
-          </button>
-        </div>
+        {/* 🏦 UPI ID Section */}
+        <div className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-3xl p-6 sm:p-8">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+            <h3 className="text-xl font-bold text-blue-950 flex items-center gap-3">
+              <Wallet className="w-5 h-5 text-indigo-600" /> UPI ID
+            </h3>
+            <button
+              onClick={() => setEditSection(editSection === "upi" ? null : "upi")}
+              disabled={editSection && editSection !== "upi"}
+              className="cursor-pointer px-4 py-2 text-sm font-medium bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50"
+            >
+              {editSection === "upi" ? "Cancel" : host.upiid ? "Edit" : "Add"}
+            </button>
+          </div>
 
-        <div className="mt-4 space-y-3">
-          <div>
-            <label className="block text-sm font-medium">UPI ID</label>
+          <div className="mt-6 space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">UPI ID</label>
             {editSection === "upi" ? (
               <input
                 type="text"
@@ -394,11 +395,11 @@ export default function HostProfile() {
                 value={formData.upiid ?? ""}
                 onChange={handleChange}
                 placeholder="example@upi"
-                className="w-full mt-1 p-2 border rounded-lg"
+                className="w-full mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-950/20"
               />
             ) : (
-              <p className="text-gray-700">
-                {host.upiid ? host.upiid : "No UPI ID added yet."}
+              <p className="text-slate-600 font-medium bg-slate-50 border border-slate-100 p-3 rounded-xl mt-1">
+                {host.upiid ? host.upiid : "No UPI ID added yet. Add one to receive payouts."}
               </p>
             )}
           </div>
@@ -407,28 +408,30 @@ export default function HostProfile() {
         {editSection === "upi" && (
           <button
             onClick={handleSaveUpi}
-            className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="cursor-pointer mt-6 px-6 py-3 font-semibold bg-blue-950 text-white rounded-xl hover:bg-blue-900 transition-colors shadow-sm"
           >
             Save Changes
           </button>
         )}
       </div>
 
-      {/* Basic Info Section */}
-      <div className="bg-white shadow-md rounded-2xl p-6">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Basic Information</h3>
-          <button
-            onClick={() => setEditSection(editSection === "basic" ? null : "basic")}
-            disabled={editSection && editSection !== "basic"}
-            className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
-          >
-            {editSection === "basic" ? "Cancel" : "Edit"}
-          </button>
-        </div>
-        <div className="mt-4 space-y-3">
-          <div>
-            <label className="block text-sm font-medium">Name</label>
+        {/* Basic Info Section */}
+        <div className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-3xl p-6 sm:p-8">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+            <h3 className="text-xl font-bold text-blue-950 flex items-center gap-3">
+              <User className="w-5 h-5 text-indigo-600" /> Basic Information
+            </h3>
+            <button
+              onClick={() => setEditSection(editSection === "basic" ? null : "basic")}
+              disabled={editSection && editSection !== "basic"}
+              className="cursor-pointer px-4 py-2 text-sm font-medium bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50"
+            >
+              {editSection === "basic" ? "Cancel" : "Edit"}
+            </button>
+          </div>
+          <div className="mt-6 space-y-5">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">Name</label>
             {editSection === "basic" ? (
               <input
                 type="text"
@@ -462,7 +465,7 @@ export default function HostProfile() {
         {editSection === "basic" && (
           <button
             onClick={handleSave}
-            className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="cursor-pointer mt-6 px-6 py-3 font-semibold bg-blue-950 text-white rounded-xl hover:bg-blue-900 transition-colors shadow-sm"
           >
             Save Changes
           </button>
@@ -470,48 +473,50 @@ export default function HostProfile() {
       </div>
 
       {/* Contact Info Section */}
-      <div className="bg-white shadow-md rounded-2xl p-6">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Contact & Verification</h3>
+      <div className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-3xl p-6 sm:p-8">
+        <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+          <h3 className="text-xl font-bold text-blue-950 flex items-center gap-3">
+            <Phone className="w-5 h-5 text-indigo-600" /> Contact & Verification
+          </h3>
           <button
             onClick={() => setEditSection(editSection === "contact" ? null : "contact")}
             disabled={editSection && editSection !== "contact"}
-            className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
+            className="cursor-pointer px-4 py-2 text-sm font-medium bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50"
           >
             {editSection === "contact" ? "Cancel" : "Edit"}
           </button>
         </div>
-        <div className="mt-4 space-y-3">
+        <div className="mt-6 space-y-5">
           <div>
-            <label className="block text-sm font-medium">Email</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">Email</label>
             <div className="flex items-center gap-2 flex-wrap">
-              <Mail className="w-5 h-5 text-gray-500" />
-              <p className="text-gray-700 break-all">{host.email}</p>
+              <Mail className="w-5 h-5 text-slate-400" />
+              <p className="text-slate-600 font-medium break-all">{host.email}</p>
               {host.isEmailVerified ? (
-                <ShieldCheck className="w-5 h-5 text-green-500" />
+                <ShieldCheck className="w-5 h-5 text-emerald-500" />
               ) : (
-                <span className="text-red-500 text-sm">Not Verified</span>
+                <span className="text-red-500 text-sm font-medium bg-red-50 px-2 py-0.5 rounded-md border border-red-100">Not Verified</span>
               )}
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium">Phone Number</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">Phone Number</label>
             {editSection === "contact" ? (
               <input
                 type="text"
                 name="phone"
                 value={formData.phone ?? ""}
                 onChange={handleChange}
-                className="cursor-pointer w-full mt-1 p-2 border rounded-lg"
+                className="cursor-pointer w-full mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-950/20"
               />
             ) : (
               <div className="flex items-center gap-2 flex-wrap">
-                <Phone className="w-5 h-5 text-gray-500" />
-                <p className="text-gray-700">{host.phone || "Not set"}</p>
+                <Phone className="w-5 h-5 text-slate-400" />
+                <p className="text-slate-600 font-medium">{host.phone || "Not set"}</p>
                 {host.isPhoneVerified ? (
-                  <ShieldCheck className="w-5 h-5 text-green-500" />
+                  <ShieldCheck className="w-5 h-5 text-emerald-500" />
                 ) : (
-                  <span className="text-red-500 text-sm">Not Verified</span>
+                  <span className="text-red-500 text-sm font-medium bg-red-50 px-2 py-0.5 rounded-md border border-red-100">Not Verified</span>
                 )}
               </div>
             )}
@@ -520,7 +525,7 @@ export default function HostProfile() {
         {editSection === "contact" && (
           <button
             onClick={handleSave}
-            className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="cursor-pointer mt-6 px-6 py-3 font-semibold bg-blue-950 text-white rounded-xl hover:bg-blue-900 transition-colors shadow-sm"
           >
             Save Changes
           </button>
@@ -529,71 +534,72 @@ export default function HostProfile() {
 
       {/* Password Section */}
       {host.authProvider === "local" ? (
-        <div className="bg-white shadow-md rounded-2xl p-6">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Lock className="w-5 h-5 text-gray-600" /> Change Password
+        <div className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-3xl p-6 sm:p-8">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+            <h3 className="text-xl font-bold text-blue-950 flex items-center gap-3">
+              <Lock className="w-5 h-5 text-indigo-600" /> Change Password
             </h3>
             <button
               onClick={() =>
                 setEditSection(editSection === "password" ? null : "password")
               }
               disabled={editSection && editSection !== "password"}
-              className="cursor-pointer px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100"
+              className="cursor-pointer px-4 py-2 text-sm font-medium bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50"
             >
               {editSection === "password" ? "Cancel" : "Edit"}
             </button>
           </div>
 
-          {editSection === "password" && (
-            <div className="mt-4 space-y-3">
-              <div>
-                <label className="block text-sm font-medium">Old Password</label>
-                <input
-                  type="password"
-                  name="oldPassword"
-                  value={passwordData.oldPassword}
-                  onChange={handlePasswordChange}
-                  className="w-full mt-1 p-2 border rounded-lg"
-                />
+            {editSection === "password" && (
+              <div className="mt-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700">Old Password</label>
+                  <input
+                    type="password"
+                    name="oldPassword"
+                    value={passwordData.oldPassword}
+                    onChange={handlePasswordChange}
+                    className="w-full mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-950/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700">New Password</label>
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordChange}
+                    className="w-full mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-950/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                    className="w-full mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-950/20"
+                  />
+                </div>
+                <button
+                  onClick={handleChangePassword}
+                  className="cursor-pointer mt-6 px-6 py-3 font-semibold bg-blue-950 text-white rounded-xl hover:bg-blue-900 transition-colors shadow-sm"
+                >
+                  Save New Password
+                </button>
               </div>
-              <div>
-                <label className="block text-sm font-medium">New Password</label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  value={passwordData.newPassword}
-                  onChange={handlePasswordChange}
-                  className="w-full mt-1 p-2 border rounded-lg"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">
-                  Confirm New Password
-                </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={passwordData.confirmPassword}
-                  onChange={handlePasswordChange}
-                  className="w-full mt-1 p-2 border rounded-lg"
-                />
-              </div>
-              <button
-                onClick={handleChangePassword}
-                className="cursor-pointer mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                Save New Password
-              </button>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="bg-white shadow-md rounded-2xl p-6 text-center text-gray-600">
-          <Lock className="w-5 h-5 mx-auto mb-2 text-gray-500" />
-          Password management is handled via Google account.
-        </div>
-      )}
+            )}
+          </div>
+        ) : (
+          <div className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 rounded-3xl p-8 text-center text-slate-500 font-medium">
+            <Lock className="w-8 h-8 mx-auto mb-3 text-slate-400" />
+            Password management is handled via Google account.
+          </div>
+        )}
+      </div>
     </div>
   );
 }
