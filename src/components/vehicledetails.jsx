@@ -290,9 +290,7 @@ export default function VehicleDetails() {
                       <p className="font-bold text-black">{vehicle.host.name || "Unknown Host"}</p>
                     </div>
                   </div>
-                  <button className="text-black font-semibold text-sm hover:underline transition-all">
-                    Contact Host
-                  </button>
+                  
                 </div>
               )}
 
