@@ -54,7 +54,10 @@ export default function HostDocumentVerification() {
       toast.dismiss("upload");
 
       if (res.data.success) {
-        toast.success("Aadhaar uploaded successfully. Verification pending.");
+        toast.success(
+          "Aadhaar uploaded successfully. Please wait until it is approved before hosting your vehicle.",
+          { duration: 5000 }
+        );
 
         setExistingDoc(res.data.data?.docUrl);
         setAadharStatus("pending");
