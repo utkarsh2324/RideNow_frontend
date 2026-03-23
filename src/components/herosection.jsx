@@ -145,29 +145,37 @@ export default function HeroSection() {
                 <div className="absolute left-[20px] top-[40px] bottom-[110px] w-0.5 bg-slate-300 z-0 hidden sm:block"></div>
 
                 {/* Location */}
-                <div className="relative flex items-center bg-slate-100 rounded-lg px-4 py-3.5 z-10 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
-                  {/* GPS Helper Text */}
-                  <div className="w-2.5 h-2.5 rounded-full bg-blue-950 shrink-0 mr-4"></div>
-                  <input
-                    type="text"
-                    placeholder="Pickup location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="flex-1 bg-transparent border-none text-blue-950 font-medium text-lg placeholder-slate-500 focus:outline-none"
-                  />
-                  <button
-                    onClick={handleUseGPS}
-                    disabled={locating}
-                    className="ml-2 text-blue-950 hover:text-slate-600 transition-colors shrink-0 p-1.5 rounded-full hover:bg-slate-300"
-                    title="Use current location"
-                  >
-                    <Navigation size={20} className={locating ? "animate-pulse" : ""} />
-           
-                  </button>
-                  <p className="text-xs text-slate-500 ml-2 mt-1">
-  Tip: Use GPS for more accurate results
+                {/* Location */}
+<div className="relative flex flex-col gap-1">
+
+<div className="flex items-center bg-slate-100 rounded-lg px-4 py-3.5 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+  
+  <div className="w-2.5 h-2.5 rounded-full bg-blue-950 shrink-0 mr-4"></div>
+
+  <input
+    type="text"
+    placeholder="Pickup location"
+    value={location}
+    onChange={(e) => setLocation(e.target.value)}
+    className="flex-1 bg-transparent border-none text-blue-950 font-medium text-lg placeholder-slate-500 focus:outline-none"
+  />
+
+  <button
+    onClick={handleUseGPS}
+    disabled={locating}
+    className="ml-2 flex items-center gap-1 text-blue-600 text-sm font-semibold hover:text-blue-800 transition"
+  >
+    <Navigation size={18} className={locating ? "animate-pulse" : ""} />
+    <span className="hidden sm:inline">Use GPS</span>
+  </button>
+</div>
+
+{/* Clean Hint */}
+<p className="text-xs text-slate-500 ml-2">
+  Use GPS for accurate pickup location
 </p>
-                </div>
+
+</div>
 
                 {/* Pickup Date & Time */}
                 <div className="flex flex-col gap-1 z-10">
