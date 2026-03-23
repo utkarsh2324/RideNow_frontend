@@ -146,6 +146,7 @@ export default function HeroSection() {
 
                 {/* Location */}
                 <div className="relative flex items-center bg-slate-100 rounded-lg px-4 py-3.5 z-10 hover:bg-slate-200 transition-colors focus-within:ring-2 focus-within:ring-blue-950">
+                  {/* GPS Helper Text */}
                   <div className="w-2.5 h-2.5 rounded-full bg-blue-950 shrink-0 mr-4"></div>
                   <input
                     type="text"
@@ -161,7 +162,11 @@ export default function HeroSection() {
                     title="Use current location"
                   >
                     <Navigation size={20} className={locating ? "animate-pulse" : ""} />
+           
                   </button>
+                  <p className="text-xs text-slate-500 ml-2 mt-1">
+  Tip: Use GPS for more accurate results
+</p>
                 </div>
 
                 {/* Pickup Date & Time */}
