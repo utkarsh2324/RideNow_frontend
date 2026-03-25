@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import { useContext } from "react";
+import { AuthContext } from "./auth"; // adjust path if needed
 export default function SearchResults() {
   const { search } = useLocation();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const queryParams = new URLSearchParams(search);
 
   // 🔍 Query params
@@ -183,11 +185,17 @@ export default function SearchResults() {
                     </div>
 
                     <button
-                      onClick={() =>
-                        navigate(
-                          `/vehicle/${v._id}?fromDate=${fromDate}&toDate=${toDate}&fromTime=${fromTime}&toTime=${toTime}`
-                        )
+                     onClick={() => {
+                      if (!user) {
+                        toast.error("Please login to view vehicle details");
+                        navigate("/login");
+                        return;
                       }
+                    
+                      navigate(
+                        `/vehicle/${v._id}?fromDate=${fromDate}&toDate=${toDate}&fromTime=${fromTime}&toTime=${toTime}`
+                      );
+                    }}
                       className="bg-black hover:bg-slate-800 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors cursor-pointer"
                     >
                       View Details
